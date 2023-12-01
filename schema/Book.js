@@ -37,19 +37,27 @@ const bookSchema = new Schema ({
     read: {
         type: Boolean,
     },
-    score: {
+    imageURL: {
+        type: String,
+    },
+    totalScore: {
         type: Number,
         min: 0,
         max: 10
     },
-    // scoreRatings: {
-    //         type: Number,
-    //         ref: "User"
-    //     },
-    // suggestedBy: {
-    //     type: Schema.Types.ObjectId,
-    //     ref: "User"
-    // }
+    scoreRatings: [
+        {
+            raterId: {
+                type: Schema.Types.ObjectId,
+                ref: "User"
+                    },
+            rating: Number,
+        },
+    ],
+    suggestedBy: {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+    }
 }
 );
 
