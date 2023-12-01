@@ -1,5 +1,7 @@
 const express = require("express")
 const cors = require("cors")
+const colors = require("colors");
+const bookRoutes = require("./routes/book.js")
 require("dotenv").config();
 
 const app = express();
@@ -11,9 +13,12 @@ connectDB();
 // Necessary middleware
 app.use(cors());
 
+// Routes
+app.use("/books", bookRoutes);
+
 app.get("/", (req, res) => {
     res.send("Welcome to the BookClub Brothers")
 })
 app.listen(PORT, () => {
-    console.log(`Server running on http://localhost:${PORT}`)
+    console.log(`Server running on http://localhost:${PORT}`.rainbow)
 })

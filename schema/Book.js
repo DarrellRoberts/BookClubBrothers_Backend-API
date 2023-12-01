@@ -34,6 +34,9 @@ const bookSchema = new Schema ({
             ],
         },
     ],
+    read: {
+        type: Boolean,
+    },
     score: {
         type: Number,
         min: 0,
