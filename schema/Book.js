@@ -42,14 +42,14 @@ const bookSchema = new Schema ({
         min: 0,
         max: 10
     },
-    scoreRatings: {
-            type: Number,
-            ref: "User"
-        },
-    suggestedBy: {
-        type: Schema.Types.ObjectId,
-        ref: "User"
-    }
+    // scoreRatings: {
+    //         type: Number,
+    //         ref: "User"
+    //     },
+    // suggestedBy: {
+    //     type: Schema.Types.ObjectId,
+    //     ref: "User"
+    // }
 }
 );
 
