@@ -3,15 +3,18 @@ const {
     createBook,
     getAllBooks,
     getOneBook,
-    // editBook,
-    deleteBook
+    editBook,
+    deleteBook,
+    bookImage
 } = require("../controllers/book");
 
+const upload = require("../service/upload")
 const app = express.Router();
 
 app.route("/").get(getAllBooks).post(createBook);
 app.get("/:bookId",getOneBook);
-// app.put("/:bookId", editBook);
+app.post("/:bookId", upload.single("picture"), bookImage);
+app.put("/:bookId", editBook)
 app.delete("/:bookId", deleteBook);
 
 module.exports = app;

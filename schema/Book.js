@@ -30,6 +30,10 @@ const bookSchema = new Schema ({
                 "Anti-war",
                 "Drama",
                 "Action",
+                "Science-fiction",
+                "Dystopian",
+                "Postmodern",
+                "Anthology",
                 "Non-fiction"
             ],
         },
@@ -37,7 +41,14 @@ const bookSchema = new Schema ({
     read: {
         type: Boolean,
     },
+    dateOfMeeting: {
+        // format "1999-05-23"
+            type: Date
+        },
     imageURL: {
+        type: String,
+    },
+    reviewImageURL: {
         type: String,
     },
     totalScore: {

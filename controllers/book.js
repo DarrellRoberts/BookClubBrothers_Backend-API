@@ -1,35 +1,51 @@
 const Book = require("../schema/Book");
 
+
 // Create book
 const createBook = async (req, res) => {
     try {
-        // const userId = req.user._id.toString();
         const bookInfo = req.body;
-        console.log("REQ:  " + req)
-
         const book = await Book.create({
-            title: bookInfo.title,
-            author: bookInfo.author,
-            pages: bookInfo.pages,
-            yearPublished: bookInfo.yearPublished,
-            genre: bookInfo.genre,
-            read: bookInfo.read,
-            score: bookInfo.score,
-            // scoreRatings: bookInfo.scoreRatings,
-            // suggestedBy: userId,
-        });
+                title: bookInfo.title,
+                author: bookInfo.author,
+                pages: bookInfo.pages,
+                yearPublished: bookInfo.yearPublished,
+                genre: bookInfo.genre,
+                read: bookInfo.read,
+                dateOfMeeting: bookInfo.dateOfMeeting,
+                imageURL: bookInfo.imageURL,
+                reviewImageURL: bookInfo.reviewImageURL,
+                totalScore: bookInfo.totalScore,
+                });
+                res.status(200).json(book);
+            } catch (error) {
+                res.status(500).json({ error: error.message });
+                console.log(error, "from controller");
+            }
+        }
 
-        //bonding user with newly created event
-        // const populatedEvent = await Event.findById(book._id).populate({
-        //     path: "suggestedBy",
-        //     select: "name",
-        // })
-        res.status(201).json(book);
-    } catch (error) {
-        res.status(500).json( {error: error.message })
-        console.log(error, "from controller");
+const bookImage = async (req, res) => {
+    try {
+        const bookId = req.params.bookId;
+        if (req.file && req.file.path) {
+            const bookImage = await Book.findByIdAndUpdate(
+                {_id: bookId },
+                {
+                    $set: {"reviewImageURL": req.file.path }
+                },
+                { new: true}
+            );
+            await bookImage.save()
+            return res.status(200).json({msg: "image successfully saved" });
+        } else {
+            console.log("REQ FILE:" + req.file);
+            res.status(422).json({msg: "invalid file"});
+        }
+    } catch(error) {
+        console.error(error);
+        res.status(500).json( {error: error.message });
     }
-}
+};
 
 // Get all books
 const getAllBooks = async (req, res) => {
@@ -63,25 +79,53 @@ const getOneBook = async (req, res) => {
 }
 
 // Edit book
-// const editBook = async (req,res) => {
-//     try {
-//     const updateBookInfo = req.body;
-//     const bookId = req.params;
-//     const updateBook = await Event.findByIdUpdate(
-//         {}bookId,
-//         { $set: updateBookInfo},
-//         { new: true }
-//     );
-//     if (!updateBook) {
-//         return res.status(404).json({ error: "book not found"});
-//     }
-//     await updateBook.save();
-//     res.status(200).json(updateBook);
-//     } catch (error) {
-//         res.status(500).json({msg: "failed to update book"})
-//     }
-// }
-
+const editBook = async (req,res) => {
+    try {
+    const bookId = req.params.bookId;
+    const { 
+        title, 
+        author, 
+        pages, 
+        yearPublished, 
+        genre, 
+        read, 
+        dateOfMeeting, 
+        imageURL, 
+        reviewImageURL, 
+        totalScore, 
+        scoreRatings, 
+        suggestedBy
+    } = req.body
+    const updateBook = await Book.findByIdAndUpdate(
+        bookId, {
+            title, 
+            author, 
+            pages, 
+            yearPublished, 
+            genre, 
+            read, 
+            dateOfMeeting, 
+            imageURL, 
+            reviewImageURL, 
+            totalScore, 
+            scoreRatings, 
+            suggestedBy
+        },
+        { 
+            new: true 
+        },
+    );
+    if (!updateBook) {
+        console.log(id);
+        return res.status(404).json({ error: `${bookId} book not found`});
+    }
+    console.log(req.body);
+    res.status(200).json(updateBook);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({msg: error})
+    }
+}
 
 // Delete Book
 const deleteBook = async (req, res) => {
@@ -102,6 +146,7 @@ module.exports = {
 createBook,
 getAllBooks,
 getOneBook,
-// editBook,
+bookImage,
+editBook,
 deleteBook
 }
