@@ -1,9 +1,9 @@
 const express = require("express")
+require("dotenv").config();
 const app = express();
 const cors = require("cors")
 const colors = require("colors");
 const bookRoutes = require("./routes/book.js")
-require("dotenv").config();
 
 const PORT = process.env.PORT;
 const connectDB = require("./dbinit.js");
