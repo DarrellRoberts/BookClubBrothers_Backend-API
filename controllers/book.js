@@ -78,6 +78,36 @@ const getOneBook = async (req, res) => {
     }
 }
 
+// Get one book by title
+const getOneBookTitle = async (req, res) => {
+    try {
+    const bookTitle = req.params.bookTitle;
+    const books = await Book.findOne({ "title": bookTitle })
+    // .populate("suggestedBy", ["name"]);
+    if (!books) {
+        return res.status(404).json({ msg: "Book not found"});
+    }
+    res.status(200).json(books);
+    } catch(error) {
+        res.status(500).json({error: error.message})
+    }
+}
+
+// Get book by genre
+const getBookGenre = async (req, res) => {
+    try {
+    const bookGenre = req.params.bookGenre;
+    const books = await Book.find({ genre: { $elemMatch: { $in:[[bookGenre]] } } });
+    // .populate("suggestedBy", ["name"]);
+    if (!books) {
+        return res.status(404).json({ msg: "Book not found"});
+    }
+    res.status(200).json(books);
+    } catch(error) {
+        res.status(500).json({error: error.message})
+    }
+}
+
 // Edit book
 const editBook = async (req,res) => {
     try {
@@ -146,6 +176,8 @@ module.exports = {
 createBook,
 getAllBooks,
 getOneBook,
+getOneBookTitle,
+getBookGenre,
 bookImage,
 editBook,
 deleteBook
