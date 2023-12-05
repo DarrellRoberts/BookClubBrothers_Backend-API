@@ -6,7 +6,9 @@ We choose the books as a group, read them and then discuss - either over a warm 
 
 For the Backend I used Node.js on the Express.js framework.
 
-This also includes my own API which I built and host on MongoDB. I also deployed it on Render.
+This also includes my own API which I built and host on MongoDB. 
+
+I deployed this repo on Render.
 
 Cheers,
 
