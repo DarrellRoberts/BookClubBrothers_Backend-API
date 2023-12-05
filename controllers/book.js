@@ -97,7 +97,7 @@ const getOneBookTitle = async (req, res) => {
 const getBookGenre = async (req, res) => {
     try {
     const bookGenre = req.params.bookGenre;
-    const books = await Book.find({ genre: { $elemMatch: { $in:[[bookGenre]] } } });
+    const books = await Book.find({ genre: [[bookGenre]] });
     // .populate("suggestedBy", ["name"]);
     if (!books) {
         return res.status(404).json({ msg: "Book not found"});
