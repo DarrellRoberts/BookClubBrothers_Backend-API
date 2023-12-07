@@ -9,15 +9,17 @@ const {
     deleteUser
 } = require("../controllers/user");
 
+const checkAuth = require("../middlewares/checkAuth")
+
 const upload = require("../service/upload")
 const app = express.Router();
 
 app.route("/").get(viewAllUserProfile).post(userSignUp, loginUser);
 app.get("/:username",viewOneUserProfile);
 app.get("/:username/reset_password", resetPasswordUser)
-app.post("/:userId", upload.single("avatar"), uploadUserImage);
+app.post("/:userId", checkAuth, upload.single("avatar"), uploadUserImage);
 // app.put("/:bookId", editBook)
-app.delete("/:userId", deleteUser);
+app.delete("/:userId", checkAuth, deleteUser);
 
 module.exports = app;
 

@@ -10,16 +10,18 @@ const {
     getBookGenre
 } = require("../controllers/book");
 
+const checkAuth = require("../middlewares/checkAuth")
+
 const upload = require("../service/upload")
 const app = express.Router();
 
-app.route("/").get(getAllBooks).post(createBook);
+app.route("/").get(getAllBooks).post(checkAuth, createBook);
 app.get("/:bookId",getOneBook);
 app.get("/title/:bookTitle", getOneBookTitle)
 app.get("/genre/:bookGenre", getBookGenre)
-app.post("/:bookId", upload.single("picture"), bookImage);
-app.put("/:bookId", editBook)
-app.delete("/:bookId", deleteBook);
+app.post("/:bookId", checkAuth, upload.single("picture"), bookImage);
+app.put("/:bookId", checkAuth, editBook)
+app.delete("/:bookId", checkAuth, deleteBook);
 
 module.exports = app;
 

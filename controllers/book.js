@@ -1,4 +1,5 @@
 const Book = require("../schema/Book");
+const User = require("../schema/User");
 
 
 // Create book
@@ -169,6 +170,35 @@ const deleteBook = async (req, res) => {
     res.status(200).json({ msg: "Book deleted successfully"});
     } catch(error) {
         res.status(500).json({ error: error.message})
+    }
+}
+
+// Rate a book
+const submitBookRating = async (req, res) => {
+    try {
+      const bookId = req.params.bookId;
+      const userId = req.user._id;
+      const rateDetails = req.body;
+  
+      const findBook = await Book.findOne({ _id: bookId });
+      const findUser = await User.findOne({ _id : userId})
+
+      const userInBook = await Book.findOne({ raterId: userId });
+
+      const bookInUser = await User.findOne({ "userInfo.booksScored": bookId })
+
+    if (findBook && findUser) {
+    findUser.userInfo.booksScored.push(bookId); 
+    findBook.raterId.push(userId); 
+  
+    await findUser.save();
+    await findBook.save();
+    res.status(200).json({ message: "Book and User added to each other lists" });
+    } else {
+    res.status(404).json({ msg: "Book or user not found" });
+    }
+    } catch (error) {
+      res.status(500).json({ error: error.message });
     }
 }
 
