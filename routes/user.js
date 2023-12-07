@@ -1,0 +1,28 @@
+const express = require("express");
+const {
+    userSignUp,
+    resetPasswordUser,
+    loginUser,
+    viewOneUserProfile,
+    viewAllUserProfile,
+    uploadUserImage,
+    deleteUser
+} = require("../controllers/user");
+
+const upload = require("../service/upload")
+const app = express.Router();
+
+app.route("/").get(viewAllUserProfile).post(userSignUp, loginUser);
+app.get("/:username",viewOneUserProfile);
+app.get("/:username/reset_password", resetPasswordUser)
+app.post("/:userId", upload.single("avatar"), uploadUserImage);
+// app.put("/:bookId", editBook)
+app.delete("/:userId", deleteUser);
+
+module.exports = app;
+
+
+
+
+
+

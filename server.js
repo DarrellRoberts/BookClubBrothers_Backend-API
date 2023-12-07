@@ -4,6 +4,7 @@ const app = express();
 const cors = require("cors")
 const colors = require("colors");
 const bookRoutes = require("./routes/book.js")
+const userRoutes = require("./routes/user.js")
 
 const PORT = process.env.PORT;
 const connectDB = require("./dbinit.js");
@@ -16,6 +17,7 @@ app.use(express.json());
 
 // Routes
 app.use("/books", bookRoutes);
+app.use("/users", userRoutes);
 
 app.get("/", (req, res) => {
     res.send("Welcome to the BookClub Brothers")

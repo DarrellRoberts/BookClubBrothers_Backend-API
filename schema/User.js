@@ -9,13 +9,17 @@ const userSchema = new Schema ({
     username: {
         type: String,
         required: true,
+        unique: true,
     },
     password: {
         type: String,
         required: true,
     },
     userInfo: {
-    residence: {
+        dob: {
+            type: Date
+        },
+        residence: {
         country: {
             type: String,
         },
@@ -23,7 +27,7 @@ const userSchema = new Schema ({
             type: String,
         }
     },
-    favGenre: [
+    favGenre:
         {
             type: [String],
             enum: [
@@ -36,10 +40,13 @@ const userSchema = new Schema ({
                 "Anti-war",
                 "Drama",
                 "Action",
+                "Science-fiction",
+                "Dystopian",
+                "Postmodern",
+                "Anthology",
                 "Non-fiction"
             ],
         },
-    ],
     profileURL: {
         type: String,
     },
@@ -69,7 +76,7 @@ userSchema.statics.signup = async function (userInfo) {
     ) {
         throw Error("Fill out your username and password...do me a favour");
     }
-    if (!validator.isUsername(userInfo.username)) {
+    if (!validator.isAlphanumeric(userInfo.username)) {
         throw Error("Username is not valid...in other words, don't be a smartass (no spaces or special characters)")
     }
     if (!validator.isStrongPassword(userInfo.password)) {
@@ -82,6 +89,7 @@ userSchema.statics.signup = async function (userInfo) {
         username: userInfo.username,
         password: hash,
         userInfo: {
+                dob: userInfo.dob,
                 residence: {
                     country: userInfo.country,
                     city: userInfo.city
@@ -126,7 +134,7 @@ userSchema.statics.resetPassword = async function (
       throw Error("The username doesn't exist. What are you playing at?? Make a new account you dingus");
     }
   
-    if (!email || !password || !confirm_password) {
+    if (!username || !password || !confirm_password) {
       throw Error("You've forgotten your password so read carefully. All the goddamn fields need to be filled out (username, password, confirm password).");
     }
   
@@ -143,7 +151,7 @@ userSchema.statics.resetPassword = async function (
     const salt = await bcrypt.genSalt();
     const hash = await bcrypt.hash(confirm_password, salt);
     const user = await this.findOneAndUpdate(
-      { email },
+      { username },
       { password: hash },
       { new: true }
     );
