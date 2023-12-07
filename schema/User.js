@@ -54,7 +54,10 @@ const userSchema = new Schema ({
         booksScored: {
             type: Schema.Types.ObjectId,
             ref: "Book",
-            score: Number,
+            score: {
+                type: Number,
+                title: String
+            },
         },
         booksSuggested: {
             type: Schema.Types.ObjectId,

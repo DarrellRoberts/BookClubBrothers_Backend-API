@@ -108,6 +108,7 @@ const viewOneUserProfile = async (req, res) => {
     }
   };
 
+//upload Image
   const uploadUserImage = async (req, res) => {
     try {
     const userId = req.params.userId;
@@ -122,7 +123,6 @@ const viewOneUserProfile = async (req, res) => {
         await userImage.save()
         return res.status(200).json({ msg: "image successfully saved" });
       } else {
-        // console.log(req.file);
         res.status(422).json({ msg: "invalid file" });
       }
     } catch (err) {
