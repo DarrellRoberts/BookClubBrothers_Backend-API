@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const User = require("../schemas/User");
+const User = require("../schema/User");
 
 // Check token if it is authorized
 const checkToken = async (req, res, next) => {
