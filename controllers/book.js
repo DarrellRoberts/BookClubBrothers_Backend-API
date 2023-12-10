@@ -26,6 +26,7 @@ const createBook = async (req, res) => {
             }
         }
 
+// Upload book image
 const bookImage = async (req, res) => {
     try {
         const bookId = req.params.bookId;
@@ -159,6 +160,8 @@ const editBook = async (req,res) => {
     }
 }
 
+// edit book rating
+
 // Delete Book
 const deleteBook = async (req, res) => {
     try {
@@ -174,7 +177,7 @@ const deleteBook = async (req, res) => {
     }
 }
 
-    const submitBookRating = async (req, res) => {
+const submitBookRating = async (req, res) => {
         try {
             const userId = req.user._id.toString();
             const bookId = req.params.bookId;
@@ -211,6 +214,31 @@ const deleteBook = async (req, res) => {
         }
     };
 
+// add a new book, read: false
+const createUnreadBook = async (req, res) => {
+    try {
+        const userId = req.user._id
+        const bookInfo = req.body;
+        const book = await Book.create({
+                title: bookInfo.title,
+                author: bookInfo.author,
+                pages: bookInfo.pages,
+                yearPublished: bookInfo.yearPublished,
+                genre: bookInfo.genre,
+                read: false,
+                dateOfMeeting: bookInfo.dateOfMeeting,
+                imageURL: bookInfo.imageURL,
+                reviewImageURL: bookInfo.reviewImageURL,
+                totalScore: bookInfo.totalScore,
+                suggestedBy: userId,
+                });
+                res.status(200).json(book);
+            } catch (error) {
+                res.status(500).json({ error: error.message });
+                console.log(error, "from controller");
+            }
+    }
+
 module.exports = {
 createBook,
 getAllBooks,
@@ -220,5 +248,6 @@ getBookGenre,
 bookImage,
 editBook,
 deleteBook,
-submitBookRating
+submitBookRating,
+createUnreadBook
 }
