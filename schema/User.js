@@ -51,13 +51,12 @@ const userSchema = new Schema ({
         type: String,
     },
     books: {
-        booksScored: {
+        booksScored: [{
             type: Schema.Types.ObjectId,
-            ref: "Book",
-            score: {
+            ref: "Book"}],
+            score: [{
                 type: Number,
-                title: String
-            },
+            }],
         },
         booksSuggested: {
             type: Schema.Types.ObjectId,
@@ -65,7 +64,6 @@ const userSchema = new Schema ({
         },
     },
 },
-}
 );
 
 // user registration

@@ -1,5 +1,6 @@
 const Book = require("../schema/Book");
 const User = require("../schema/User");
+const { calculateAverageRating } = require("../utils/bookScore");
 
 
 // Create book
@@ -173,34 +174,42 @@ const deleteBook = async (req, res) => {
     }
 }
 
-// Rate a book
-const submitBookRating = async (req, res) => {
-    try {
-      const bookId = req.params.bookId;
-      const userId = req.user._id;
-      const rateDetails = req.body;
-  
-      const findBook = await Book.findOne({ _id: bookId });
-      const findUser = await User.findOne({ _id : userId})
-
-      const userInBook = await Book.findOne({ raterId: userId });
-
-      const bookInUser = await User.findOne({ "userInfo.booksScored": bookId })
-
-    if (findBook && findUser) {
-    findUser.userInfo.booksScored.push(bookId); 
-    findBook.raterId.push(userId); 
-  
-    await findUser.save();
-    await findBook.save();
-    res.status(200).json({ message: "Book and User added to each other lists" });
-    } else {
-    res.status(404).json({ msg: "Book or user not found" });
-    }
-    } catch (error) {
-      res.status(500).json({ error: error.message });
-    }
-}
+    const submitBookRating = async (req, res) => {
+        try {
+            const userId = req.user._id.toString();
+            const bookId = req.params.bookId;
+            const rateDetails = req.body;
+    
+            const findBook = await Book.findOne({ _id: bookId });
+            const findUser = await User.findOne({ _id: userId });
+    
+            if (findBook && findUser) {
+                const bookScoreUserArray = findBook.scoreRatings.raterId;
+    
+                const hasUserRated = bookScoreUserArray.some(raterId => raterId.toString() === userId);
+    
+                if (hasUserRated) {
+                    return res.status(200).json({ msg: "Your rating is already submitted" });
+                } else {
+                    findUser.userInfo.books.booksScored.push(bookId);
+                    findUser.userInfo.books.score.push(rateDetails.rating);
+    
+                    findBook.scoreRatings.raterId.push(userId);
+                    findBook.scoreRatings.rating.push(rateDetails.rating);
+    
+                    await findUser.save();
+                    await findBook.save();
+                    res.status(200).json({ msg: "Rating submitted successfully" });
+                }
+            } else {
+                return res.status(404).json({ msg: "Book or user not found" });
+            }
+            calculateAverageRating(bookId);
+        } catch (error) {
+            console.log(error);
+            return res.status(500).json({ error: error.message });
+        }
+    };
 
 module.exports = {
 createBook,
@@ -210,5 +219,6 @@ getOneBookTitle,
 getBookGenre,
 bookImage,
 editBook,
-deleteBook
+deleteBook,
+submitBookRating
 }
