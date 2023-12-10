@@ -7,7 +7,8 @@ const {
     deleteBook,
     bookImage,
     getOneBookTitle,
-    getBookGenre
+    getBookGenre,
+    submitBookRating
 } = require("../controllers/book");
 
 const checkAuth = require("../middlewares/checkAuth")
@@ -21,6 +22,7 @@ app.get("/title/:bookTitle", getOneBookTitle)
 app.get("/genre/:bookGenre", getBookGenre)
 app.post("/:bookId", checkAuth, upload.single("picture"), bookImage);
 app.put("/:bookId", checkAuth, editBook)
+app.post("/rating/:bookId", checkAuth, submitBookRating)
 app.delete("/:bookId", checkAuth, deleteBook);
 
 module.exports = app;

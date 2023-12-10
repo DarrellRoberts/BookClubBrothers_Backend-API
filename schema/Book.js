@@ -56,15 +56,17 @@ const bookSchema = new Schema ({
         min: 0,
         max: 10
     },
-    scoreRatings: [
-        {
-            raterId: {
-                type: Schema.Types.ObjectId,
-                ref: "User"
-                    },
-            rating: Number,
+    scoreRatings: {
+        raterId: {
+            type: [Schema.Types.ObjectId],
+            ref: "User",
+            default: [],
         },
-    ],
+        rating: {
+            type: [Number],
+            default: [],
+        },
+    },
     suggestedBy: {
         type: Schema.Types.ObjectId,
         ref: "User",
