@@ -10,7 +10,8 @@ const createToken = (_id, username, profileURL) => {
   const userSignUp = async (req, res) => {
     const userInfo = req.body;
     const userImage = req.file;
-  
+    const user = await User.find()
+    if (user.length <= 5) {
     try {
       let user = await User.signup(userInfo);
       if (userImage && user && req.file.path) {
@@ -39,6 +40,9 @@ const createToken = (_id, username, profileURL) => {
     } catch (error) {
       res.status(400).json({ error: error.message });
     }
+  } else {
+    res.status(401).json({msg: "This bookclub is exclusive and has reached its limit in terms of membership. Contact the admin if you would like to join. He might be persuaded :) "})
+  }
   };
 
 // Reset password
