@@ -214,6 +214,33 @@ const submitBookRating = async (req, res) => {
         }
     };
 
+    const editBookRating = async (req, res) => {
+        try {
+            const userId = req.user._id.toString();
+            const bookId = req.params.bookId;
+            const rateDetails = req.body;
+
+            const findBook = await Book.findOne({ _id: bookId });
+            const findUser = await User.findOne({ _id: userId }); 
+
+            if (findBook && findUser) {
+                const bookScoreUserArray = findBook.scoreRatings.raterId;
+                const ratingIndex = bookScoreUserArray.indexOf(userId)
+                findUser.userInfo.books.score.splice(ratingIndex, 1, rateDetails.rating);
+                findBook.scoreRatings.rating.splice(ratingIndex,1,rateDetails.rating);
+                await findUser.save();
+                await findBook.save();
+                res.status(200).json({ msg: "Rating submitted edited" });
+            } else {
+                return res.status(404).json({ msg: "Book or user not found" });
+            }
+            calculateAverageRating(bookId);
+        } catch (error) {
+            console.log(error);
+            return res.status(500).json({ error: error.message });
+        }
+    };
+
 // add a new book, read: false
 const createUnreadBook = async (req, res) => {
     try {
@@ -249,5 +276,6 @@ bookImage,
 editBook,
 deleteBook,
 submitBookRating,
+editBookRating,
 createUnreadBook
 }
