@@ -241,6 +241,68 @@ const submitBookRating = async (req, res) => {
         }
     };
 
+const submitBookComment = async (req,res) => {
+    try {
+        const userId = req.user._id.toString();
+        const bookId = req.params.bookId;
+        const commentDetails = req.body;
+
+        const findBook = await Book.findOne({ _id: bookId });
+        const findUser = await User.findOne({ _id: userId });
+        console.log(commentDetails.comments);
+        if (findBook && findUser) {
+            const bookScoreUserArray = findBook.commentInfo.commentId;
+
+            const hasUserRated = bookScoreUserArray.some(raterId => raterId.toString() === userId);
+
+            if (hasUserRated) {
+                return res.status(200).json({ msg: "Your comment is already submitted" });
+            } else {
+                findUser.userInfo.books.booksCommented.push(bookId);
+                findUser.userInfo.books.comments.push(commentDetails.comments);
+
+                findBook.commentInfo.commentId.push(userId);
+                findBook.commentInfo.comments.push(commentDetails.comments);
+
+                await findUser.save();
+                await findBook.save();
+                res.status(200).json({ msg: "Comment submitted successfully" });
+            }
+        } else {
+            return res.status(404).json({ msg: "Book or user not found" });
+        }
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ error: error.message });
+    }
+}
+
+const editBookComment = async (req, res) => {
+    try {
+        const userId = req.user._id.toString();
+        const bookId = req.params.bookId;
+        const commentDetails = req.body;
+
+        const findBook = await Book.findOne({ _id: bookId });
+        const findUser = await User.findOne({ _id: userId }); 
+
+        if (findBook && findUser) {
+            const bookScoreUserArray = findBook.commentInfo.commentId;
+            const commentIndex = bookScoreUserArray.indexOf(userId)
+            findUser.userInfo.books.comments.splice(commentIndex, 1, commentDetails.comments);
+            findBook.commentInfo.comments.splice(commentIndex,1,commentDetails.comments);
+            await findUser.save();
+            await findBook.save();
+            res.status(200).json({ msg: "Rating submitted edited" });
+        } else {
+            return res.status(404).json({ msg: "Book or user not found" });
+        }
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ error: error.message });
+    }
+};
+
 // add a new book, read: false
 const createUnreadBook = async (req, res) => {
     try {
@@ -266,6 +328,18 @@ const createUnreadBook = async (req, res) => {
             }
     }
 
+const getTotalScore = async (req,res) => {
+    try {
+        const books = await Book.find({}, { totalScore: 1, title: 1, _id: 0 }).sort({ totalScore: -1});
+        if (!books) {
+            return res.status(404).json({ msg: "Book not found"});
+        }
+        res.status(200).json(books);
+        } catch(error) {
+            res.status(500).json({error: error.message})
+        }
+}
+
 module.exports = {
 createBook,
 getAllBooks,
@@ -277,5 +351,8 @@ editBook,
 deleteBook,
 submitBookRating,
 editBookRating,
-createUnreadBook
+submitBookComment,
+editBookComment,
+createUnreadBook,
+getTotalScore
 }

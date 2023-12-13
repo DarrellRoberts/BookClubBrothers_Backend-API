@@ -67,6 +67,18 @@ const bookSchema = new Schema ({
             default: [],
         },
     },
+    commentInfo: {
+        commentId: {
+            type: [Schema.Types.ObjectId],
+            ref: "User",
+            default: [],
+        },
+        comments: {
+            type: [String],
+            default: [],
+            maxLength: 100
+        },
+    },
     suggestedBy: {
         type: Schema.Types.ObjectId,
         ref: "User",

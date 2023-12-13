@@ -57,6 +57,13 @@ const userSchema = new Schema ({
             score: [{
                 type: Number,
             }],
+        booksCommented: [{
+            type: Schema.Types.ObjectId,
+            ref: "Book"}],
+            comments: [{
+                type: String,
+                maxLength: 100,
+            }]
         },
         booksSuggested: {
             type: Schema.Types.ObjectId,
