@@ -75,6 +75,10 @@ const userSchema = new Schema ({
 
 // user registration
 userSchema.statics.signup = async function (userInfo) {
+    const allUsers = await this.find();
+    if (allUsers.length === 5) {
+        throw Error("This bookclub is exclusive and has reached its limit in terms of membership. Contact the admin if you would like to join. He might be persuaded :) ")
+    } 
     const exists = await this.findOne({ username: userInfo.username });
     if (exists) {
         throw Error("Imposter!! Username is already in use.");
