@@ -56,6 +56,8 @@ const userSchema = new Schema ({
             ref: "Book"}],
             score: [{
                 type: Number,
+                min: 0,
+                max: 10
             }],
         booksCommented: [{
             type: Schema.Types.ObjectId,
