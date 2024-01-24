@@ -6,7 +6,9 @@ const {
     viewOneUserProfile,
     viewAllUserProfile,
     uploadUserImage,
-    deleteUser
+    deleteUser,
+    editUsername,
+    editUserInfo
 } = require("../controllers/user");
 
 const checkAuth = require("../middlewares/checkAuth")
@@ -21,6 +23,8 @@ app.get("/:username",viewOneUserProfile);
 app.get("/:username/reset_password", resetPasswordUser)
 app.post("/upload/:userId", checkAuth, upload.single("avatar"), uploadUserImage);
 app.delete("/:userId", checkAuth, deleteUser);
+app.put("/username/:userId", checkAuth, editUsername)
+app.put("/:userId", checkAuth, editUserInfo)
 
 module.exports = app;
 
