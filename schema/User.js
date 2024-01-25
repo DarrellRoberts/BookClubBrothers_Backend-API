@@ -27,7 +27,7 @@ const userSchema = new Schema ({
             type: String,
         }
     },
-    favGenre:
+    favGenre: [
         {
             type: [String],
             enum: [
@@ -47,6 +47,7 @@ const userSchema = new Schema ({
                 "Non-fiction"
             ],
         },
+    ],
     profileURL: {
         type: String,
     },
