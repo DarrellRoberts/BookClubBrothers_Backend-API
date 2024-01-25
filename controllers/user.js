@@ -174,7 +174,7 @@ const editUserInfo = async (req,res) => {
       {
         $set: {
         "userInfo.residence.city": updatedInfo.userInfo.residence?.city,
-        "userInfo.residence.country": updatedInfo.userInfo.residence?.country  
+        "userInfo.residence.country": updatedInfo.userInfo.residence?.country,
         },
         $push: {
         "userInfo.favGenre": updatedInfo.userInfo.favGenre
