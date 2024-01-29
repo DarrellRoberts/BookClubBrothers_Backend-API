@@ -13,7 +13,8 @@ const {
     editBookRating,
     submitBookComment,
     editBookComment,
-    getTotalScore
+    getTotalScore,
+    getUnreadBooks
 } = require("../controllers/book");
 
 const checkAuth = require("../middlewares/checkAuth")
@@ -26,6 +27,7 @@ app.get("/scores", getTotalScore)
 app.get("/:bookId",getOneBook);
 app.get("/title/:bookTitle", getOneBookTitle)
 app.get("/genre/:bookGenre", getBookGenre)
+app.get("/unread/all", getUnreadBooks)
 app.post("/:bookId", checkAuth, upload.single("picture"), bookImage);
 app.put("/:bookId", checkAuth, editBook)
 app.post("/rating/:bookId", checkAuth, submitBookRating)
@@ -33,7 +35,8 @@ app.put("/rating/edit/:bookId", checkAuth, editBookRating)
 app.post("/comment/:bookId", checkAuth, submitBookComment)
 app.put("/comment/edit/:bookId", checkAuth, editBookComment)
 app.delete("/:bookId", checkAuth, deleteBook);
-app.post("/create/unread", checkAuth, createUnreadBook )
+app.post("/unread/create", checkAuth, createUnreadBook )
+
 
 
 module.exports = app;

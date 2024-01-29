@@ -111,6 +111,20 @@ const getBookGenre = async (req, res) => {
     }
 }
 
+// Get book by unread
+const getUnreadBooks = async (req, res) => {
+    try {
+    const books = await Book.find({ read: false });
+    console.log("Found books:", books);
+    if (!books) {
+        return res.status(404).json({ msg: "Book not found"});
+    }
+    res.status(200).json(books);
+    } catch(error) {
+        res.status(500).json({error: error.message})
+    }
+}
+
 // Edit book
 const editBook = async (req,res) => {
     try {
@@ -159,8 +173,6 @@ const editBook = async (req,res) => {
         res.status(500).json({msg: error})
     }
 }
-
-// edit book rating
 
 // Delete Book
 const deleteBook = async (req, res) => {
@@ -354,5 +366,6 @@ editBookRating,
 submitBookComment,
 editBookComment,
 createUnreadBook,
-getTotalScore
+getTotalScore,
+getUnreadBooks
 }
