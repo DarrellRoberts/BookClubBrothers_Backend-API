@@ -13,6 +13,7 @@ const {
     editBookRating,
     submitBookComment,
     editBookComment,
+    deleteBookComment,
     getTotalScore,
     getUnreadBooks
 } = require("../controllers/book");
@@ -35,6 +36,7 @@ app.put("/rating/edit/:bookId", checkAuth, editBookRating)
 app.post("/comment/:bookId", checkAuth, submitBookComment)
 app.put("/comment/edit/:bookId", checkAuth, editBookComment)
 app.delete("/:bookId", checkAuth, deleteBook);
+app.delete("/comment/delete/:bookId", checkAuth, deleteBookComment)
 app.post("/unread/create", checkAuth, createUnreadBook )
 
 
