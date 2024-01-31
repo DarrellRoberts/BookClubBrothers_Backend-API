@@ -324,6 +324,37 @@ const editBookComment = async (req, res) => {
     }
 };
 
+//delete comment, needs testing
+const deleteBookComment = async (req, res) => {
+    try {
+        const userId = req.user._id.toString();
+        const bookId = req.params.bookId;
+        
+        const findBook = await Book.findOne({ _id: bookId });
+        const findUser = await User.findOne({ _id: userId }); 
+
+        if (findBook && findUser) {
+            const bookScoreUserArray = findBook.commentInfo.commentId;
+            const userScoreBookArray = findUser.userInfo.books.booksCommented;
+            
+            const commentBookIndex = bookScoreUserArray.indexOf(userId)
+            const commentUserIndex = userScoreBookArray.indexOf(bookId)
+            
+            findBook.commentInfo.comments.splice(commentBookIndex,1);
+            findUser.userInfo.books.comments.splice(commentUserIndex, 1);
+            
+            await findUser.save();
+            await findBook.save();
+            res.status(200).json({ msg: "Rating submitted deleted" });
+        } else {
+            return res.status(404).json({ msg: "Book or user not found" });
+        }
+    } catch (error) {
+        console.log(error);
+        return res.status(500).json({ error: error.message });
+    }
+};
+
 // add a new book, read: false
 const createUnreadBook = async (req, res) => {
     try {
@@ -374,6 +405,7 @@ submitBookRating,
 editBookRating,
 submitBookComment,
 editBookComment,
+deleteBookComment,
 createUnreadBook,
 getTotalScore,
 getUnreadBooks
