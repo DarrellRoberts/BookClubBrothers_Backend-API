@@ -304,9 +304,14 @@ const editBookComment = async (req, res) => {
 
         if (findBook && findUser) {
             const bookScoreUserArray = findBook.commentInfo.commentId;
-            const commentIndex = bookScoreUserArray.indexOf(userId)
-            findUser.userInfo.books.comments.splice(commentIndex, 1, commentDetails.comments);
-            findBook.commentInfo.comments.splice(commentIndex,1,commentDetails.comments);
+            const userScoreBookArray = findUser.userInfo.books.booksCommented;
+            
+            const commentBookIndex = bookScoreUserArray.indexOf(userId)
+            const commentUserIndex = userScoreBookArray.indexOf(bookId)
+            
+            findBook.commentInfo.comments.splice(commentBookIndex,1,commentDetails.comments);
+            findUser.userInfo.books.comments.splice(commentUserIndex, 1, commentDetails.comments);
+            
             await findUser.save();
             await findBook.save();
             res.status(200).json({ msg: "Rating submitted edited" });
