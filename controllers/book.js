@@ -53,16 +53,11 @@ const bookImage = async (req, res) => {
 // Get all books
 const getAllBooks = async (req, res) => {
     try {
-        const books = await Book.find()
-        books.sort(function(a,b) {
-            const c = new Date(a.dateOfMeeting);
-            const d = new Date(b.dateOfMeeting);
-            return c-d;
-        })
+        const books = await Book.find();
         if (books.length === 0) {
             return res.status(200).json({msg: "No books exist"});
         } 
-        res.status(200).json(books)
+        res.status(200).json(books);
     } catch(error) {
         res.status(500).json({error: error.message})
     }
