@@ -64,7 +64,7 @@ const userSchema = new Schema ({
             ref: "Book"}],
             comments: [{
                 type: String,
-                maxLength: 100,
+                maxLength: 500,
             }]
         },
         booksSuggested: {
