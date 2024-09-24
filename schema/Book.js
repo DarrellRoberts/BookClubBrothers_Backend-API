@@ -78,7 +78,7 @@ const bookSchema = new Schema ({
         comments: {
             type: [String],
             default: [],
-            maxLength: 100
+            maxLength: 500
         },
     },
     suggestedBy: {
