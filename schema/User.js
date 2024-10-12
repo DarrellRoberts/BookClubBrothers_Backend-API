@@ -71,6 +71,20 @@ const userSchema = new Schema ({
             type: Schema.Types.ObjectId,
             ref: "Book"
         },
+    badges: {
+        loneWolf: {
+            type: Boolean,
+            default: false
+        },
+        allBooks: {
+            type: Boolean,
+            default: false
+        },
+        mostBooks: {
+            type: Boolean,
+            default: false
+        }
+    }
     },
 },
 );

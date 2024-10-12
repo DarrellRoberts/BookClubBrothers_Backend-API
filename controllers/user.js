@@ -1,5 +1,5 @@
-const User = require("../schema/User.js")
-const jwt = require("jsonwebtoken")
+const User = require("../schema/User.js");
+const jwt = require("jsonwebtoken");
 
 const createToken = (_id, username, profileURL) => {
     return jwt.sign({ _id, username, profileURL }, process.env.SECRET, {

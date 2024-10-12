@@ -1,6 +1,9 @@
 const Book = require("../schema/Book");
 const User = require("../schema/User");
 const { calculateAverageRating } = require("../utils/bookScore");
+const  { updateUserLoneWolfBadge } = require("../utils/badges/loneWolfBadge.js");
+const {updateUserMostBooksBadge} = require("../utils/badges/mostBooksBadge.js")
+
 
 
 // Create book
@@ -213,7 +216,7 @@ const submitBookRating = async (req, res) => {
     
                     findBook.scoreRatings.raterId.push(userId);
                     findBook.scoreRatings.rating.push(rateDetails.rating);
-    
+                    
                     await findUser.save();
                     await findBook.save();
                     res.status(200).json({ msg: "Rating submitted successfully" });
@@ -221,6 +224,8 @@ const submitBookRating = async (req, res) => {
             } else {
                 return res.status(404).json({ msg: "Book or user not found" });
             }
+            updateUserLoneWolfBadge(userId, bookId);
+            updateUserMostBooksBadge(userId);
             calculateAverageRating(bookId);
         } catch (error) {
             console.log(error);
