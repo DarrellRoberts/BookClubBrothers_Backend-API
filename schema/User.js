@@ -83,6 +83,10 @@ const userSchema = new Schema ({
         mostBooks: {
             type: Boolean,
             default: false
+        },
+        fiveComments: {
+            type: Boolean,
+            default: false
         }
     }
     },

@@ -2,9 +2,8 @@ const Book = require("../schema/Book");
 const User = require("../schema/User");
 const { calculateAverageRating } = require("../utils/bookScore");
 const  { updateUserLoneWolfBadge } = require("../utils/badges/loneWolfBadge.js");
-const {updateUserMostBooksBadge} = require("../utils/badges/mostBooksBadge.js")
-
-
+const { updateUserMostBooksBadge } = require("../utils/badges/mostBooksBadge.js")
+const { commentBadge } = require("../utils/badges/commentBadge.js")
 
 // Create book
 const createBook = async (req, res) => {
@@ -289,6 +288,7 @@ const submitBookComment = async (req,res) => {
 
                 await findUser.save();
                 await findBook.save();
+                commentBadge(userId);
                 res.status(200).json({ msg: "Comment submitted successfully" });
             }
         } else {
