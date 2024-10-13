@@ -6,7 +6,7 @@ const commentBadge = async (userId) => {
         if (!user) {
             throw new Error("User not found");
           }
-        if(user.userInfo.booksCommented.length >= 5) {
+        if(user.userInfo.books.booksCommented.length >= 5) {
             user.userInfo.badges.fiveComments = true;
         }
         await user.save()
