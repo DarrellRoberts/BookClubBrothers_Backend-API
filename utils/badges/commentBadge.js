@@ -12,7 +12,7 @@ const commentBadge = async (userId) => {
         await user.save()
     } catch(err) {
         console.error(err);
-        console.log("Error occurred updating lone wolf badge");
+        console.log("Error occurred updating comment badge");
     }
 }
 

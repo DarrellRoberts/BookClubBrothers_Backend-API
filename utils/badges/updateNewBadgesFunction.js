@@ -8,7 +8,7 @@ async function updateNewBadgesFunction() {
 
         for (const user of users) {
             user.userInfo.badges = {
-                fivecomments: false,
+                firstBook: false,
             };
             await user.save();
         }
