@@ -87,6 +87,10 @@ const userSchema = new Schema ({
         fiveComments: {
             type: Boolean,
             default: false
+        },
+        firstBook: {
+            type: Boolean,
+            default: false
         }
     }
     },

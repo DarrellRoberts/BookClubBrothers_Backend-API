@@ -16,6 +16,4 @@ const firstBookBadge = async (userId) => {
     }
 }
 
-// firstBookBadge("6578874deb6efa1410a65d85");
-
 module.exports = { firstBookBadge };
