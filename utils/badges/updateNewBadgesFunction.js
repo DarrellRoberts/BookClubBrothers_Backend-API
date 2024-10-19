@@ -7,9 +7,7 @@ async function updateNewBadgesFunction() {
         const users = await User.find();
 
         for (const user of users) {
-            user.userInfo.badges = {
-                firstBook: false,
-            };
+            user.loggedIn = false
             await user.save();
         }
 
@@ -19,4 +17,4 @@ async function updateNewBadgesFunction() {
     }
 }
 
-// updateNewBadgesFunction();
+updateNewBadgesFunction();
