@@ -67,7 +67,9 @@ const loginUser = async (req, res) => {
       const userImg = await User.findOne({ username });
   
       const user = await User.login(username, password);
-  
+      if (user.loggedIn) {
+        res.status(409).json({error: `${user.username} is already logged in`})
+      }
 //creating token
       let token;
       if (userImg.profileURL) {
@@ -75,13 +77,30 @@ const loginUser = async (req, res) => {
       } else {
         token = createToken(user._id, user.username);
       }
-  
+      console.log(user);
+      user.loggedIn = true;
+      await user.save();
       res.status(200).json({ username, token });
       console.log("success with login");
     } catch (err) {
       res.status(400).json({ error: err.message });
     }
   };
+
+const logoutUser = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const user = await User.findByIdAndUpdate(userId, {
+      loggedIn: false
+    }
+    );
+    await user.save();
+    res.status(200).json({message: `${user.username} successfully logged out`})
+  } catch(err) {
+    res.status(400).json({ error: err.message });
+    console.error("Error occurred when logging out");
+  }
+}
 
 // View one profile user
 const viewOneUserProfile = async (req, res) => {
@@ -212,6 +231,7 @@ module.exports = {
 userSignUp,
 resetPasswordUser,
 loginUser,
+logoutUser,
 viewOneUserProfile,
 viewAllUserProfile,
 uploadUserImage,

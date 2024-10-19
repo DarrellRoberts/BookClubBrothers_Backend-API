@@ -3,6 +3,7 @@ const {
     userSignUp,
     resetPasswordUser,
     loginUser,
+    logoutUser,
     viewOneUserProfile,
     viewAllUserProfile,
     uploadUserImage,
@@ -19,6 +20,7 @@ const app = express.Router();
 app.route("/").get(viewAllUserProfile)
 app.post("/signup", userSignUp) 
 app.post("/login", loginUser)
+app.put("/logout", checkAuth, logoutUser)
 app.get("/:username",viewOneUserProfile);
 app.get("/:username/reset_password", resetPasswordUser)
 app.post("/upload/:userId", checkAuth, upload.single("avatar"), uploadUserImage);

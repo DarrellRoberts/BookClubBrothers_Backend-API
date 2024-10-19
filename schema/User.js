@@ -15,6 +15,10 @@ const userSchema = new Schema ({
         type: String,
         required: true,
     },
+    loggedIn: {
+        type: Boolean,
+        default: false
+    },
     userInfo: {
         dob: {
             type: Date
