@@ -20,8 +20,7 @@ const userSchema = new Schema ({
         default: false
     },
     lastLoggedIn: {
-        type: String,
-        default: "",
+        type: Date
     },
     userInfo: {
         dob: {

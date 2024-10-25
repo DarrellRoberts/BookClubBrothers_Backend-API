@@ -1,6 +1,5 @@
 const User = require("../schema/User.js");
 const jwt = require("jsonwebtoken");
-const { getDate } = require("../utils/dateFunction.js");
 
 const createToken = (_id, username, profileURL) => {
     return jwt.sign({ _id, username, profileURL }, process.env.SECRET, {
@@ -80,8 +79,7 @@ const loginUser = async (req, res) => {
       }
       console.log(user);
       user.loggedIn = true;
-      user.lastLoggedIn = "";
-      user.lastLoggedIn = getDate();
+      user.lastLoggedIn = Date.now();
       await user.save();
       res.status(200).json({ username, token });
       console.log("success with login");
