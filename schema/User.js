@@ -19,6 +19,10 @@ const userSchema = new Schema ({
         type: Boolean,
         default: false
     },
+    lastLoggedIn: {
+        type: String,
+        default: "",
+    },
     userInfo: {
         dob: {
             type: Date
