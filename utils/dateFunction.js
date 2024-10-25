@@ -16,4 +16,6 @@ const getDate = () => {
     return todayResult;
   };
 
+  console.log(getDate());
+
 module.exports = { getDate };

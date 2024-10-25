@@ -80,6 +80,7 @@ const loginUser = async (req, res) => {
       }
       console.log(user);
       user.loggedIn = true;
+      user.lastLoggedIn = "";
       user.lastLoggedIn = getDate();
       await user.save();
       res.status(200).json({ username, token });
