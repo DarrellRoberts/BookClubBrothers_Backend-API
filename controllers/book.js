@@ -1,12 +1,13 @@
 const Book = require("../schema/Book");
 const User = require("../schema/User");
-const { calculateAverageRating } = require("../utils/bookScore");
-const { updateUserLoneWolfBadge } = require("../utils/badges/loneWolfBadge.js");
 const {
+  calculateAverageRating,
+  commentBadge,
+  firstBookBadge,
+  updateUserLoneWolfBadge,
   updateUserMostBooksBadge,
-} = require("../utils/badges/mostBooksBadge.js");
-const { commentBadge } = require("../utils/badges/commentBadge.js");
-const { firstBookBadge } = require("../utils/badges/firstBookBadge.js");
+  punctualBadge,
+} = require("../utils/index.js");
 
 // Create book
 const createBook = async (req, res) => {
@@ -143,11 +144,9 @@ const editBook = async (req, res) => {
 
     if (suggestedById || userId === "65723ac894b239fe25fe6871") {
       if (suggestedById !== userId && userId !== "65723ac894b239fe25fe6871") {
-        return res
-          .status(401)
-          .json({
-            error: `${userId} does not have the permission to edit this book`,
-          });
+        return res.status(401).json({
+          error: `${userId} does not have the permission to edit this book`,
+        });
       }
       const {
         title,
@@ -206,11 +205,9 @@ const deleteBook = async (req, res) => {
 
     if (suggestedById || userId === "65723ac894b239fe25fe6871") {
       if (suggestedById !== userId && userId !== "65723ac894b239fe25fe6871") {
-        return res
-          .status(401)
-          .json({
-            error: `${userId} does not have the permission to delete this book`,
-          });
+        return res.status(401).json({
+          error: `${userId} does not have the permission to delete this book`,
+        });
       }
       if (!book) {
         return res.status(404).json({ msg: "Book not found" });
@@ -259,6 +256,7 @@ const submitBookRating = async (req, res) => {
     }
     firstBookBadge(userId);
     updateUserLoneWolfBadge(userId, bookId);
+    punctualBadge(userId, bookId);
     updateUserMostBooksBadge(userId);
     calculateAverageRating(bookId);
   } catch (error) {
