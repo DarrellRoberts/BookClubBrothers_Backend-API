@@ -88,8 +88,8 @@ const userSchema = new Schema({
     },
     badges: {
       loneWolf: {
-        type: Boolean,
-        default: false,
+        type: Number,
+        default: 0,
       },
       allBooks: {
         type: Boolean,

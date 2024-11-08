@@ -12,7 +12,7 @@ const updateUserLoneWolfBadge = async (userId, bookId) => {
             throw new Error("Book not found");
         }
         if(book.scoreRatings.raterId.length === 1) {
-            user.userInfo.badges.loneWolf = true;
+            user.userInfo.badges.loneWolf++;
         }
         await user.save()
     } catch(err) {

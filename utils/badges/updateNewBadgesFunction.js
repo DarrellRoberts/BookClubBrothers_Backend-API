@@ -7,7 +7,9 @@ async function updateNewBadgesFunction() {
     const users = await User.find();
 
     for (const user of users) {
-      user.loggedIn = false;
+      user.userInfo.badges = {
+        loneWolf: 0,
+      };
       await user.save();
     }
 
