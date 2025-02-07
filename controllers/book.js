@@ -60,12 +60,28 @@ const bookImage = async (req, res) => {
 // Get all books
 const getAllBooks = async (req, res) => {
   try {
-    const books = await Book.find();
-    books.sort(function (a, b) {
-      const c = Date.parse(a.dateOfMeeting);
-      const d = Date.parse(b.dateOfMeeting) ? Date.parse(b.dateOfMeeting) : 0;
-      return d - c;
-    });
+    const books = await Book.find().sort({ dateOfMeeting: -1 });
+    if (books.length === 0) {
+      return res.status(200).json({ msg: "No books exist" });
+    }
+    res.status(200).json(books);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
+
+// Get limit books
+const getLimitBooks = async (req, res) => {
+  try {
+    const bookLimit = parseInt(req.params.bookLimit);
+    if (isNaN(bookLimit) || bookLimit < 0) {
+      return res.status(400).json({
+        error: "Invalid bookLimit parameter. Must be a non-negative integer.",
+      });
+    }
+    const books = await Book.find()
+      .sort({ dateOfMeeting: -1 })
+      .limit(bookLimit);
     if (books.length === 0) {
       return res.status(200).json({ msg: "No books exist" });
     }
@@ -461,6 +477,7 @@ const getTotalScore = async (req, res) => {
 module.exports = {
   createBook,
   getAllBooks,
+  getLimitBooks,
   getOneBook,
   getOneBookTitle,
   getBookGenre,
