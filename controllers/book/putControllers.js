@@ -1,4 +1,5 @@
 const Book = require("../../schema/Book");
+const User = require("../../schema/User");
 const { calculateAverageRating } = require("../../utils/index");
 
 const editBook = async (req, res) => {
