@@ -1,32 +1,51 @@
-const User = require("../../schema/User");
+const User = require("../../schema/User")
 
 // View one profile user
 const viewOneUserProfile = async (req, res) => {
-  const username = req.params.username;
+  const username = req.params.username
   try {
-    const user = await User.findOne({ username }).select("-password");
+    const user = await User.findOne({ username }).select("-password")
     if (user) {
-      res.status(200).json(user);
+      res.status(200).json(user)
     } else {
-      return res.status(404).json({ msg: "User not found" });
+      return res.status(404).json({ msg: "User not found" })
     }
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: error.message })
   }
-};
+}
+
+// View one profile user with id
+const viewOneUserProfileId = async (req, res) => {
+  const id = req.params._id
+  try {
+    const user = await User.findOne({ id }).select("-password")
+    if (user) {
+      res.status(200).json(user)
+    } else {
+      return res.status(404).json({ msg: "User not found" })
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message })
+  }
+}
 
 // View all profile user
 const viewAllUserProfile = async (req, res) => {
   try {
-    const user = await User.find().select("-password");
+    const user = await User.find().select("-password")
     if (user.length === 0) {
-      res.status(404).json({ msg: "No users exist" });
+      res.status(404).json({ msg: "No users exist" })
     } else {
-      res.status(200).json(user);
+      res.status(200).json(user)
     }
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    res.status(500).json({ error: error.message })
   }
-};
+}
 
-module.exports = { viewOneUserProfile, viewAllUserProfile };
+module.exports = {
+  viewOneUserProfile,
+  viewAllUserProfile,
+  viewOneUserProfileId,
+}
