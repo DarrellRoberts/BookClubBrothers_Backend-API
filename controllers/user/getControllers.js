@@ -17,9 +17,9 @@ const viewOneUserProfile = async (req, res) => {
 
 // View one profile user with id
 const viewOneUserProfileId = async (req, res) => {
-  const id = req.params._id
+  const userId = req.params.id
   try {
-    const user = await User.findOne({ id }).select("-password")
+    const user = await User.findOne({ _id: userId }).select("-password")
     if (user) {
       res.status(200).json(user)
     } else {
