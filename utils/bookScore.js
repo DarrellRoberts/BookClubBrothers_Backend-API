@@ -1,37 +1,63 @@
-const Book = require("../schema/Book");
+const Book = require("../schema/Book")
 
 // Calculate and update the average book rating
 const calculateAverageRating = async (bookId) => {
   try {
-    const book = await Book.findOne({ _id: bookId });
+    const book = await Book.findOne({ _id: bookId })
 
     if (!book) {
-      throw new Error("Book not found to calculate rating");
+      throw new Error("Book not found to calculate rating")
     }
 
     // Get book info from Book schema
-    const bookRating = book.scoreRatings.rating;
-    console.log(bookRating)
+    const bookRating = book.scoreRatings.rating
     if (bookRating.length === 0) {
-      bookRating.totalScore = 0;
+      bookRating.totalScore = 0
     } else {
-      const totalRatingSum = bookRating.reduce(
-        (sum, rating) => sum + rating,
-        0
-      );
-      const calRating = totalRatingSum / bookRating.length;
+      const totalRatingSum = bookRating.reduce((sum, rating) => sum + rating, 0)
+      const calRating = totalRatingSum / bookRating.length
       const averageRate = await Book.findByIdAndUpdate(
         { _id: bookId },
         {
           $set: {
-            "totalScore": calRating,
+            totalScore: calRating,
           },
         }
-      );
+      )
     }
   } catch (error) {
-    console.error("Error calculating average book rating: ", error);
+    console.error("Error calculating average book rating: ", error)
   }
-};
+}
 
-module.exports = { calculateAverageRating };
+const calcShortStoriesRating = async (bookId) => {
+  try {
+    const book = await Book.findOne({ _id: bookId })
+
+    if (!book) {
+      throw new Error("Book not found to calculate rating")
+    }
+
+    // Get book info from Book schema
+    const bookRating = book.scoreRatings.rating
+
+    if (bookRating.length === 0) {
+      bookRating.totalScore = 0
+    } else {
+      const totalRatingSum = bookRating.reduce((sum, rating) => sum + rating, 0)
+      const calRating = totalRatingSum / bookRating.length
+      const averageRate = await Book.findByIdAndUpdate(
+        { _id: bookId },
+        {
+          $set: {
+            totalScore: calRating,
+          },
+        }
+      )
+    }
+  } catch (error) {
+    console.error("Error calculating average book rating: ", error)
+  }
+}
+
+module.exports = { calculateAverageRating }

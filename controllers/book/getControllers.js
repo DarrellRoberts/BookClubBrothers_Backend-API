@@ -101,6 +101,29 @@ const getTotalScore = async (req, res) => {
   }
 };
 
+const getShortStory = async (req, res) => {
+  try {
+    const shortStoryId = req.params.shortStoryId;
+    const bookId = req.params.bookId;
+
+    const book = await Book.findOne({ _id: bookId });
+
+    if (!book) {
+      return res.status(404).json({ msg: "Book not found" });
+    } else if (!book.genre.includes("Anthology")) {
+      return res.status(405).json({ msg: "Book has no short stories"})
+    } else {
+      const shortStory = book.shortStories.find(story => story._id.toString() === shortStoryId)
+      if (!shortStory) {
+        return res.status(404).json({ msg: "Short story does not exist"})
+      }
+    res.status(200).json(shortStory);
+    }
+  } catch (error) {
+    res.status(500).json({error: error.message})
+  }
+}
+
 module.exports = {
   getAllBooks,
   getLimitBooks,
@@ -108,5 +131,6 @@ module.exports = {
   getOneBookTitle,
   getBookGenre,
   getUnreadBooks,
-  getTotalScore
+  getTotalScore,
+  getShortStory
 };
