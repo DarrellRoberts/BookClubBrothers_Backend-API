@@ -49,6 +49,48 @@ const bookSchema = new Schema({
     // format "1999-05-23"
     type: Date,
   },
+  shortStories:[
+    {
+    parentId: {
+      type: Schema.Types.ObjectId,
+      ref: "Book",
+    },
+    title: {
+      type: String
+    },
+    author: {
+      type: String
+    },
+    pages: {
+      type: Number
+    },
+    scoreRatings: {
+      raterId: {
+        type: [Schema.Types.ObjectId],
+        ref: "User",
+        default: [],
+      },
+      rating: {
+        type: [Number],
+        default: [],
+        min: 0,
+        max: 10,
+      },
+    },
+    commentInfo: {
+      commentId: {
+        type: [Schema.Types.ObjectId],
+        ref: "User",
+        default: [],
+      },
+      comments: {
+        type: [String],
+        default: [],
+        maxLength: 500,
+      },
+    },
+  },
+],
   imageURL: {
     type: String,
   },
