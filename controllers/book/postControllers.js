@@ -198,7 +198,7 @@ const submitShortStoryRating = async (req, res) => {
 
     if (!findBook) {
       return res.status(404).json({ msg: "Book not found" })
-    } else if (!findBook.genre.includes("Anthology")) {
+    } else if (!findBook.genre[0].includes("Anthology")) {
       return res.status(405).json({ msg: "Book has no short stories" })
     } else {
       const shortStory = findBook.shortStories.find(
