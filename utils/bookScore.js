@@ -1,7 +1,7 @@
-const Book = require("../schema/Book")
+import Book from "../schema/Book.js"
 
 // Calculate and update the average book rating
-const calculateAverageRating = async (bookId) => {
+export const calculateAverageRating = async (bookId) => {
   try {
     const book = await Book.findOne({ _id: bookId })
 
@@ -59,5 +59,3 @@ const calcShortStoriesRating = async (bookId) => {
     console.error("Error calculating average book rating: ", error)
   }
 }
-
-module.exports = { calculateAverageRating }

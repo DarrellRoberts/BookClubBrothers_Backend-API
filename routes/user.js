@@ -1,24 +1,29 @@
-const express = require("express")
-const {
+import express from "express"
+
+// Remember: ES Modules require the file extension (e.g., .js)
+import {
   viewOneUserProfile,
   viewAllUserProfile,
   viewOneUserProfileId,
-} = require("../controllers/user/getControllers")
-const {
+} from "../controllers/user/getControllers.js"
+
+import {
   userSignUp,
   resetPasswordUser,
   loginUser,
   uploadUserImage,
-} = require("../controllers/user/postControllers")
-const {
+} from "../controllers/user/postControllers.js"
+
+import {
   editUsername,
   editUserInfo,
-} = require("../controllers/user/putControllers")
-const { deleteUser } = require("../controllers/user/deleteControllers")
+} from "../controllers/user/putControllers.js"
 
-const checkAuth = require("../middlewares/checkAuth")
+import { deleteUser } from "../controllers/user/deleteControllers.js"
 
-const upload = require("../service/upload")
+import checkAuth from "../middlewares/checkAuth.js"
+import upload from "../service/upload.js"
+
 const app = express.Router()
 
 app.route("/").get(viewAllUserProfile)
@@ -32,4 +37,4 @@ app.put("/username/:userId", checkAuth, editUsername)
 app.put("/:userId", checkAuth, editUserInfo)
 app.delete("/:userId", checkAuth, deleteUser)
 
-module.exports = app
+export default app

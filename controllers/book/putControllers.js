@@ -1,8 +1,8 @@
-const Book = require("../../schema/Book")
-const User = require("../../schema/User")
-const { calculateAverageRating } = require("../../utils/index")
+import Book from "../../schema/Book"
+import User from "../../schema/User"
+import { calculateAverageRating } from "../../utils/index"
 
-const editBook = async (req, res) => {
+export const editBook = async (req, res) => {
   try {
     const bookId = req.params.bookId
     const userId = req.user._id.toString()
@@ -65,7 +65,7 @@ const editBook = async (req, res) => {
   }
 }
 
-const editBookRating = async (req, res) => {
+export const editBookRating = async (req, res) => {
   try {
     const userId = req.user._id.toString()
     const bookId = req.params.bookId
@@ -104,7 +104,7 @@ const editBookRating = async (req, res) => {
   }
 }
 
-const editShortStoryRating = async (req, res) => {
+export const editShortStoryRating = async (req, res) => {
   try {
     const userId = req.user._id.toString()
     const bookId = req.params.bookId
@@ -165,7 +165,7 @@ const editShortStoryRating = async (req, res) => {
   }
 }
 
-const editBookComment = async (req, res) => {
+export const editBookComment = async (req, res) => {
   try {
     const userId = req.user._id.toString()
     const bookId = req.params.bookId
@@ -202,11 +202,4 @@ const editBookComment = async (req, res) => {
     console.log(error)
     return res.status(500).json({ error: error.message })
   }
-}
-
-module.exports = {
-  editBook,
-  editBookRating,
-  editBookComment,
-  editShortStoryRating,
 }

@@ -1,15 +1,6 @@
-const { commentBadge } = require("./badges/commentBadge");
-const { firstBookBadge } = require("./badges/firstBookBadge");
-const { updateUserLoneWolfBadge } = require("./badges/loneWolfBadge");
-const { updateUserMostBooksBadge } = require("./badges/mostBooksBadge");
-const { punctualBadge } = require("./badges/punctualBadge");
-const { calculateAverageRating } = require("./bookScore");
-
-module.exports = {
-  calculateAverageRating,
-  commentBadge,
-  firstBookBadge,
-  updateUserLoneWolfBadge,
-  updateUserMostBooksBadge,
-  punctualBadge,
-};
+export { commentBadge } from "./badges/commentBadge.js"
+export { firstBookBadge } from "./badges/firstBookBadge.js"
+export { updateUserLoneWolfBadge } from "./badges/loneWolfBadge.js"
+export { updateUserMostBooksBadge } from "./badges/mostBooksBadge.js"
+export { punctualBadge } from "./badges/punctualBadge.js"
+export { calculateAverageRating } from "./bookScore.js"

@@ -1,21 +1,22 @@
 // only use this function to add new badges
 
-const User = require("../../schema/User");
+import User from "../../schema/User"
+import Book from "../../schema/Book"
 
 async function updateNewBadgesFunction() {
   try {
-    const users = await User.find();
+    const users = await User.find()
 
     for (const user of users) {
       user.userInfo.badges = {
         loneWolf: 0,
-      };
-      await user.save();
+      }
+      await user.save()
     }
 
-    console.log("All user profiles updated with badges.");
+    console.log("All user profiles updated with badges.")
   } catch (error) {
-    console.error("Error updating user profiles:", error);
+    console.error("Error updating user profiles:", error)
   }
 }
 

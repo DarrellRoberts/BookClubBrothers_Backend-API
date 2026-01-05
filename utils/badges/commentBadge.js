@@ -1,6 +1,6 @@
-const User = require("../../schema/User");
+import User from "../../schema/User"
 
-const commentBadge = async (userId) => {
+export const commentBadge = async (userId) => {
     try {
         const user = await User.findOne({ _id: userId });
         if (!user) {
@@ -15,5 +15,3 @@ const commentBadge = async (userId) => {
         console.log("Error occurred updating comment badge");
     }
 }
-
-module.exports = { commentBadge };

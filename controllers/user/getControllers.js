@@ -1,7 +1,7 @@
-const User = require("../../schema/User")
+import User from "../../schema/User"
 
 // View one profile user
-const viewOneUserProfile = async (req, res) => {
+export const viewOneUserProfile = async (req, res) => {
   const username = req.params.username
   try {
     const user = await User.findOne({ username }).select("-password")
@@ -16,7 +16,7 @@ const viewOneUserProfile = async (req, res) => {
 }
 
 // View one profile user with id
-const viewOneUserProfileId = async (req, res) => {
+export const viewOneUserProfileId = async (req, res) => {
   const userId = req.params.id
   try {
     const user = await User.findOne({ _id: userId }).select("-password")
@@ -31,7 +31,7 @@ const viewOneUserProfileId = async (req, res) => {
 }
 
 // View all profile user
-const viewAllUserProfile = async (req, res) => {
+export const viewAllUserProfile = async (req, res) => {
   try {
     const user = await User.find().select("-password")
     if (user.length === 0) {
@@ -42,10 +42,4 @@ const viewAllUserProfile = async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: error.message })
   }
-}
-
-module.exports = {
-  viewOneUserProfile,
-  viewAllUserProfile,
-  viewOneUserProfileId,
 }

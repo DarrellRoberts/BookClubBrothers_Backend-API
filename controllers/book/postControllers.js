@@ -1,15 +1,16 @@
-const Book = require("../../schema/Book")
-const User = require("../../schema/User")
-const {
+import Book from "../../schema/Book"
+import User from "../../schema/User"
+
+import {
   calculateAverageRating,
   commentBadge,
   firstBookBadge,
   updateUserLoneWolfBadge,
   updateUserMostBooksBadge,
   punctualBadge,
-} = require("../../utils/index")
+} from "../../utils/index"
 
-const createBook = async (req, res) => {
+export const createBook = async (req, res) => {
   try {
     const bookInfo = req.body
     const book = await Book.create({
@@ -33,7 +34,7 @@ const createBook = async (req, res) => {
   }
 }
 
-const bookImage = async (req, res) => {
+export const bookImage = async (req, res) => {
   try {
     const bookId = req.params.bookId
     if (req.file && req.file.path) {
@@ -56,7 +57,7 @@ const bookImage = async (req, res) => {
   }
 }
 
-const submitBookRating = async (req, res) => {
+export const submitBookRating = async (req, res) => {
   try {
     const userId = req.user._id.toString()
     const bookId = req.params.bookId
@@ -99,7 +100,7 @@ const submitBookRating = async (req, res) => {
   }
 }
 
-const submitBookComment = async (req, res) => {
+export const submitBookComment = async (req, res) => {
   try {
     const userId = req.user._id.toString()
     const bookId = req.params.bookId
@@ -139,7 +140,7 @@ const submitBookComment = async (req, res) => {
   }
 }
 
-const createUnreadBook = async (req, res) => {
+export const createUnreadBook = async (req, res) => {
   try {
     const userId = req.user._id
     const bookInfo = req.body
@@ -164,7 +165,7 @@ const createUnreadBook = async (req, res) => {
   }
 }
 
-const createShortStory = async (req, res) => {
+export const createShortStory = async (req, res) => {
   try {
     const bookId = req.params.bookId
 
@@ -186,7 +187,7 @@ const createShortStory = async (req, res) => {
   }
 }
 
-const submitShortStoryRating = async (req, res) => {
+export const submitShortStoryRating = async (req, res) => {
   try {
     const userId = req.user._id.toString()
     const bookId = req.params.bookId
@@ -267,14 +268,4 @@ const submitShortStoryRating = async (req, res) => {
     console.log(error)
     return res.status(500).json({ error: error.message })
   }
-}
-
-module.exports = {
-  createBook,
-  bookImage,
-  submitBookRating,
-  submitBookComment,
-  createUnreadBook,
-  createShortStory,
-  submitShortStoryRating,
 }

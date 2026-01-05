@@ -1,26 +1,24 @@
-const User = require("../../schema/User");
-const Book = require("../../schema/Book");
+import User from "../../schema/User"
+import Book from "../../schema/Book"
 
-const punctualBadge = async (userId, bookId) => {
+export const punctualBadge = async (userId, bookId) => {
   try {
-    const user = await User.findOne({ _id: userId });
-    const book = await Book.findOne({ _id: bookId });
+    const user = await User.findOne({ _id: userId })
+    const book = await Book.findOne({ _id: bookId })
     if (!user) {
-      throw new Error("User not found");
+      throw new Error("User not found")
     }
     if (!book) {
-      throw new Error("Book not found");
+      throw new Error("Book not found")
     }
-    const meetingDateInMs = new Date(book.dateOfMeeting).getTime();
-    const currentDateInMs = Date.now();
+    const meetingDateInMs = new Date(book.dateOfMeeting).getTime()
+    const currentDateInMs = Date.now()
     if (meetingDateInMs > currentDateInMs) {
-      user.userInfo.badges.punctual++;
+      user.userInfo.badges.punctual++
     }
-    await user.save();
+    await user.save()
   } catch (err) {
-    console.error(err);
-    console.log("Error occurred updating punctual badge");
+    console.error(err)
+    console.log("Error occurred updating punctual badge")
   }
-};
-
-module.exports = { punctualBadge };
+}
