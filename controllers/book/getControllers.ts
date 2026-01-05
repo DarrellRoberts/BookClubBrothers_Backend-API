@@ -1,6 +1,9 @@
-import Book from "../../schema/Book"
+import { Response } from "express"
+import Book from "../../schema/Book.ts"
+import { AuthRequest, ShortBook } from "../../types/index.ts"
+import { ObjectId } from "mongoose"
 
-export const getAllBooks = async (req, res) => {
+export const getAllBooks = async (req: AuthRequest, res: Response) => {
   try {
     const books = await Book.find().sort({ dateOfMeeting: -1 })
     if (books.length === 0) {
@@ -8,11 +11,11 @@ export const getAllBooks = async (req, res) => {
     }
     res.status(200).json(books)
   } catch (error) {
-    res.status(500).json({ error: error.message })
+    res.status(500).json({ error })
   }
 }
 
-export const getLimitBooks = async (req, res) => {
+export const getLimitBooks = async (req: AuthRequest, res: Response) => {
   try {
     const bookLimit = parseInt(req.params.bookLimit)
     if (isNaN(bookLimit) || bookLimit < 0) {
@@ -26,11 +29,13 @@ export const getLimitBooks = async (req, res) => {
     }
     res.status(200).json(books)
   } catch (error) {
-    res.status(500).json({ error: error.message })
+    const errorMessage =
+      error instanceof Error ? error.message : "Internal server error"
+    res.status(500).json({ error: errorMessage })
   }
 }
 
-export const getOneBook = async (req, res) => {
+export const getOneBook = async (req: AuthRequest, res: Response) => {
   try {
     const bookId = req.params.bookId
     const books = await Book.findOne({ _id: bookId })
@@ -40,11 +45,11 @@ export const getOneBook = async (req, res) => {
     }
     res.status(200).json(books)
   } catch (error) {
-    res.status(500).json({ error: error.message })
+    res.status(500).json({ error })
   }
 }
 
-export const getOneBookTitle = async (req, res) => {
+export const getOneBookTitle = async (req: AuthRequest, res: Response) => {
   try {
     const bookTitle = req.params.bookTitle
     const books = await Book.findOne({ title: bookTitle })
@@ -54,11 +59,11 @@ export const getOneBookTitle = async (req, res) => {
     }
     res.status(200).json(books)
   } catch (error) {
-    res.status(500).json({ error: error.message })
+    res.status(500).json({ error })
   }
 }
 
-export const getBookGenre = async (req, res) => {
+export const getBookGenre = async (req: AuthRequest, res: Response) => {
   try {
     const bookGenre = req.params.bookGenre
     const books = await Book.find({ genre: [[bookGenre]] })
@@ -68,11 +73,11 @@ export const getBookGenre = async (req, res) => {
     }
     res.status(200).json(books)
   } catch (error) {
-    res.status(500).json({ error: error.message })
+    res.status(500).json({ error })
   }
 }
 
-export const getUnreadBooks = async (req, res) => {
+export const getUnreadBooks = async (req: AuthRequest, res: Response) => {
   try {
     const books = await Book.find({ read: false })
     console.log("Found books:", books)
@@ -81,11 +86,11 @@ export const getUnreadBooks = async (req, res) => {
     }
     res.status(200).json(books)
   } catch (error) {
-    res.status(500).json({ error: error.message })
+    res.status(500).json({ error })
   }
 }
 
-export const getTotalScore = async (req, res) => {
+export const getTotalScore = async (req: AuthRequest, res: Response) => {
   try {
     const books = await Book.find({}, { totalScore: 1, title: 1, _id: 0 }).sort(
       { totalScore: -1 }
@@ -95,11 +100,11 @@ export const getTotalScore = async (req, res) => {
     }
     res.status(200).json(books)
   } catch (error) {
-    res.status(500).json({ error: error.message })
+    res.status(500).json({ error })
   }
 }
 
-export const getShortStory = async (req, res) => {
+export const getShortStory = async (req: AuthRequest, res: Response) => {
   try {
     const shortStoryId = req.params.shortStoryId
     const bookId = req.params.bookId
@@ -120,6 +125,6 @@ export const getShortStory = async (req, res) => {
       res.status(200).json(shortStory)
     }
   } catch (error) {
-    res.status(500).json({ error: error.message })
+    res.status(500).json({ error })
   }
 }

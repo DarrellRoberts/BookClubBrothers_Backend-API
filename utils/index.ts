@@ -1,0 +1,6 @@
+export { commentBadge } from "./badges/commentBadge.ts"
+export { firstBookBadge } from "./badges/firstBookBadge.ts"
+export { updateUserLoneWolfBadge } from "./badges/loneWolfBadge.ts"
+export { updateUserMostBooksBadge } from "./badges/mostBooksBadge.ts"
+export { punctualBadge } from "./badges/punctualBadge.ts"
+export { calculateAverageRating } from "./bookScore.ts"

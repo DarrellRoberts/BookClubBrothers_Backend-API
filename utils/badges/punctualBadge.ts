@@ -1,5 +1,5 @@
-import User from "../../schema/User"
-import Book from "../../schema/Book"
+import User from "../../schema/User.ts"
+import Book from "../../schema/Book.ts"
 
 export const punctualBadge = async (userId, bookId) => {
   try {

@@ -4,6 +4,7 @@
     "moduleResolution": "NodeNext",
     "allowImportingTsExtensions": true,
     "rewriteRelativeImportExtensions": true,
-    "noEmit": true
+    "noEmit": true,
+    "strict": true
   }
 }

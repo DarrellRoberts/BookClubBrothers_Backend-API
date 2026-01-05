@@ -3,7 +3,7 @@ import cors from "cors"
 import dotenv from "dotenv"
 import bookRoutes from "./routes/book.js"
 import userRoutes from "./routes/user.js"
-import { connectDB } from "./dbinit.js"
+import { connectDB } from "./dbinit.ts"
 
 dotenv.config()
 

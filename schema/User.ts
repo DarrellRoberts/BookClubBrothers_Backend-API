@@ -1,6 +1,7 @@
 import mongoose from "mongoose"
 import bcrypt from "bcrypt"
 import validator from "validator"
+import { User } from "../types/user.ts"
 
 const { Schema } = mongoose
 
@@ -227,5 +228,5 @@ userSchema.statics.resetPassword = async function (
   return user
 }
 
-const User = mongoose.model("User", userSchema)
+const User = mongoose.model("User", userSchema) satisfies User
 export default User

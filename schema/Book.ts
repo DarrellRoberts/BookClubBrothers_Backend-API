@@ -1,4 +1,5 @@
 import mongoose from "mongoose"
+import { Book } from "../types/book.ts"
 
 const { Schema } = mongoose
 
@@ -17,27 +18,25 @@ const bookSchema = new Schema({
   yearPublished: {
     type: Number,
   },
-  genre: [
-    {
-      type: [String],
-      enum: [
-        "Horror",
-        "Thriller",
-        "Comedy",
-        "Romance",
-        "Fantasy",
-        "Adventure",
-        "Anti-war",
-        "Drama",
-        "Action",
-        "Science-fiction",
-        "Dystopian",
-        "Postmodern",
-        "Anthology",
-        "Non-fiction",
-      ],
-    },
-  ],
+  genre: {
+    type: [String],
+    enum: [
+      "Horror",
+      "Thriller",
+      "Comedy",
+      "Romance",
+      "Fantasy",
+      "Adventure",
+      "Anti-war",
+      "Drama",
+      "Action",
+      "Science-fiction",
+      "Dystopian",
+      "Postmodern",
+      "Anthology",
+      "Non-fiction",
+    ],
+  },
   read: {
     type: Boolean,
   },
@@ -133,5 +132,5 @@ const bookSchema = new Schema({
   },
 })
 
-const Book = mongoose.model("Book", bookSchema)
+const Book = mongoose.model("Book", bookSchema) satisfies Book
 export default Book

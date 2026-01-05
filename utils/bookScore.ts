@@ -1,7 +1,7 @@
-import Book from "../schema/Book.js"
+import Book from "../schema/Book.ts"
 
 // Calculate and update the average book rating
-export const calculateAverageRating = async (bookId) => {
+export const calculateAverageRating = async (bookId: string) => {
   try {
     const book = await Book.findOne({ _id: bookId })
 
@@ -10,12 +10,15 @@ export const calculateAverageRating = async (bookId) => {
     }
 
     // Get book info from Book schema
-    const bookRating = book.scoreRatings.rating
-    if (bookRating.length === 0) {
-      bookRating.totalScore = 0
+    const bookRating = book.scoreRatings?.rating
+    if (bookRating?.length === 0) {
+      book.totalScore = 0
     } else {
-      const totalRatingSum = bookRating.reduce((sum, rating) => sum + rating, 0)
-      const calRating = totalRatingSum / bookRating.length
+      const totalRatingSum = bookRating!.reduce(
+        (sum, rating) => sum + rating,
+        0
+      )
+      const calRating = totalRatingSum / bookRating!.length
       const averageRate = await Book.findByIdAndUpdate(
         { _id: bookId },
         {
@@ -30,7 +33,7 @@ export const calculateAverageRating = async (bookId) => {
   }
 }
 
-const calcShortStoriesRating = async (bookId) => {
+export const calcShortStoriesRating = async (bookId: string) => {
   try {
     const book = await Book.findOne({ _id: bookId })
 
@@ -39,13 +42,16 @@ const calcShortStoriesRating = async (bookId) => {
     }
 
     // Get book info from Book schema
-    const bookRating = book.scoreRatings.rating
+    const bookRating = book.scoreRatings?.rating
 
-    if (bookRating.length === 0) {
-      bookRating.totalScore = 0
+    if (bookRating?.length === 0) {
+      book.totalScore = 0
     } else {
-      const totalRatingSum = bookRating.reduce((sum, rating) => sum + rating, 0)
-      const calRating = totalRatingSum / bookRating.length
+      const totalRatingSum = bookRating?.reduce(
+        (sum, rating) => sum + rating,
+        0
+      ) as number
+      const calRating = totalRatingSum / bookRating!.length
       const averageRate = await Book.findByIdAndUpdate(
         { _id: bookId },
         {

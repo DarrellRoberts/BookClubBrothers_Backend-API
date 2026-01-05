@@ -1,7 +1,7 @@
 // only use this function to add new badges
 
-import User from "../../schema/User"
-import Book from "../../schema/Book"
+import User from "../../schema/User.ts"
+import Book from "../../schema/Book.ts"
 
 async function updateNewBadgesFunction() {
   try {

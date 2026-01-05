@@ -1,4 +1,4 @@
-import User from "../../schema/User"
+import User from "../../schema/User.ts"
 
 export const firstBookBadge = async (userId) => {
   try {

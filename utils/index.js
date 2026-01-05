@@ -1,6 +1,0 @@
-export { commentBadge } from "./badges/commentBadge.js"
-export { firstBookBadge } from "./badges/firstBookBadge.js"
-export { updateUserLoneWolfBadge } from "./badges/loneWolfBadge.js"
-export { updateUserMostBooksBadge } from "./badges/mostBooksBadge.js"
-export { punctualBadge } from "./badges/punctualBadge.js"
-export { calculateAverageRating } from "./bookScore.js"

@@ -1,13 +1,15 @@
-import Book from "../../schema/Book"
-import User from "../../schema/User"
+import { Response } from "express"
+import { AuthRequest } from "../../types/index.ts"
+import Book from "../../schema/Book.ts"
+import User from "../../schema/User.ts"
 
-export const deleteBook = async (req, res) => {
+export const deleteBook = async (req: AuthRequest, res: Response) => {
   try {
     const bookId = req.params.bookId
     const userId = req.user._id.toString()
 
     const book = await Book.findById(bookId)
-    const suggestedById = book.suggestedBy
+    const suggestedById = book?.suggestedBy?.toString()
 
     if (suggestedById || userId === "65723ac894b239fe25fe6871") {
       if (suggestedById !== userId && userId !== "65723ac894b239fe25fe6871") {
@@ -22,27 +24,31 @@ export const deleteBook = async (req, res) => {
       res.status(200).json({ msg: "Book deleted successfully" })
     }
   } catch (error) {
-    res.status(500).json({ error: error.message })
+    res.status(500).json({ error })
   }
 }
 
-export const deleteBookComment = async (req, res) => {
+export const deleteBookComment = async (req: AuthRequest, res: Response) => {
   try {
-    const userId = req.user._id.toString()
+    const userId = req.user._id.toString() as string
     const bookId = req.params.bookId
 
     const findBook = await Book.findOne({ _id: bookId })
     const findUser = await User.findOne({ _id: userId })
 
     if (findBook && findUser) {
-      const bookScoreUserArray = findBook.commentInfo.commentId
-      const userScoreBookArray = findUser.userInfo.books.booksCommented
+      const bookScoreUserArray = findBook.commentInfo?.commentId
+      const userScoreBookArray = findUser.userInfo?.books?.booksCommented
 
-      const commentBookIndex = bookScoreUserArray.indexOf(userId)
-      const commentUserIndex = userScoreBookArray.indexOf(bookId)
+      const commentBookIndex = bookScoreUserArray?.indexOf(
+        userId as any
+      ) as number
+      const commentUserIndex = userScoreBookArray?.indexOf(
+        bookId as any
+      ) as number
 
-      findBook.commentInfo.comments.splice(commentBookIndex, 1)
-      findUser.userInfo.books.comments.splice(commentUserIndex, 1)
+      findBook.commentInfo?.comments.splice(commentBookIndex, 1)
+      findUser.userInfo?.books?.comments.splice(commentUserIndex, 1)
 
       await findUser.save()
       await findBook.save()
@@ -51,7 +57,6 @@ export const deleteBookComment = async (req, res) => {
       return res.status(404).json({ msg: "Book or user not found" })
     }
   } catch (error) {
-    console.log(error)
-    return res.status(500).json({ error: error.message })
+    return res.status(500).json({ error })
   }
 }
