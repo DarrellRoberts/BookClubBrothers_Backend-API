@@ -1,7 +1,6 @@
 import { Response } from "express"
 import Book from "../../schema/Book"
-import { AuthRequest, ShortBook } from "../../types/index"
-import { ObjectId } from "mongoose"
+import { AuthRequest } from "../../types/index"
 
 export const getAllBooks = async (req: AuthRequest, res: Response) => {
   try {

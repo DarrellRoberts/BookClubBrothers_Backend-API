@@ -1,6 +1,5 @@
 import express from "express"
 
-// Remember: ES Modules require the file extension (e.g., .js)
 import {
   viewOneUserProfile,
   viewAllUserProfile,
