@@ -6,6 +6,12 @@ services:
     environment:
       - PORT=8080
       - MONGODB_URI=${MONGODB_URI}
+      - ADMIN_ID=${ADMIN_ID}
+      - CLOUD_NAME=${CLOUD_NAME}
+      - API_KEY=${API_KEY}
+      - API_SECRET=${API_SECRET}
+      - SECRET=${SECRET}
+
     depends_on:
       - mongo
   mongo:

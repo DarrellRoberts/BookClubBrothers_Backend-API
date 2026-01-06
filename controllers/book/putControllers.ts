@@ -1,18 +1,21 @@
-const Book = require("../../schema/Book")
-const User = require("../../schema/User")
-const { calculateAverageRating } = require("../../utils/index")
+import Book from "../../schema/Book"
+import User from "../../schema/User"
+import { AuthRequest } from "../../types/auth"
+import { Response } from "express"
+import { calculateAverageRating } from "../../utils/index"
+import { ShortBook } from "../../types/book"
 
-const editBook = async (req, res) => {
+export const editBook = async (req: AuthRequest, res: Response) => {
   try {
     const bookId = req.params.bookId
-    const userId = req.user._id.toString()
+    const userId = req.user?._id.toString()
 
     const book = await Book.findById(bookId)
-    const suggestedById = book.suggestedBy
+    const suggestedById = book?.suggestedBy?.toString()
 
-    if (suggestedById || userId === "65723ac894b239fe25fe6871") {
-      if (suggestedById !== userId && userId !== "65723ac894b239fe25fe6871") {
-        return res.status(401).json({
+    if (suggestedById || userId === process.env.ADMIN_ID) {
+      if (suggestedById !== userId && userId !== process.env.ADMIN_ID) {
+        return res.status(403).json({
           error: `${userId} does not have the permission to edit this book`,
         })
       }
@@ -60,14 +63,13 @@ const editBook = async (req, res) => {
       res.status(200).json(updateBook)
     }
   } catch (error) {
-    console.error(error)
-    res.status(500).json({ msg: error })
+    res.status(500).json({ error })
   }
 }
 
-const editBookRating = async (req, res) => {
+export const editBookRating = async (req: AuthRequest, res: Response) => {
   try {
-    const userId = req.user._id.toString()
+    const userId = req.user?._id.toString()
     const bookId = req.params.bookId
     const rateDetails = req.body
 
@@ -75,18 +77,22 @@ const editBookRating = async (req, res) => {
     const findUser = await User.findOne({ _id: userId })
 
     if (findBook && findUser) {
-      const bookScoreUserArray = findBook.scoreRatings.raterId
-      const ratingBookIndex = bookScoreUserArray.indexOf(userId)
+      const bookScoreUserArray = findBook.scoreRatings?.raterId
+      const ratingBookIndex = bookScoreUserArray?.indexOf(
+        userId as any
+      ) as number
 
-      const userScoreBookArray = findUser.userInfo.books.booksScored
-      const ratingUserIndex = userScoreBookArray.indexOf(bookId)
+      const userScoreBookArray = findUser.userInfo?.books?.booksScored
+      const ratingUserIndex = userScoreBookArray?.indexOf(
+        bookId as any
+      ) as number
 
-      findUser.userInfo.books.score.splice(
+      findUser.userInfo?.books?.score.splice(
         ratingUserIndex,
         1,
         rateDetails.rating
       )
-      findBook.scoreRatings.rating.splice(
+      findBook.scoreRatings?.rating?.splice(
         ratingBookIndex,
         1,
         rateDetails.rating
@@ -99,14 +105,13 @@ const editBookRating = async (req, res) => {
     }
     calculateAverageRating(bookId)
   } catch (error) {
-    console.log(error)
-    return res.status(500).json({ error: error.message })
+    return res.status(500).json({ error })
   }
 }
 
-const editShortStoryRating = async (req, res) => {
+export const editShortStoryRating = async (req: AuthRequest, res: Response) => {
   try {
-    const userId = req.user._id.toString()
+    const userId = req.user?._id.toString()
     const bookId = req.params.bookId
     const shortStoryId = req.params.shortStoryId
     const rateDetails = req.body
@@ -114,7 +119,7 @@ const editShortStoryRating = async (req, res) => {
     const findBook = await Book.findOne({ _id: bookId })
     const findUser = await User.findOne({ _id: userId })
 
-    const shortStory = findBook.shortStories.find(
+    const shortStory = findBook?.shortStories?.find(
       (story) => story._id.toString() === shortStoryId
     )
 
@@ -123,32 +128,38 @@ const editShortStoryRating = async (req, res) => {
     }
 
     if (findBook && findUser) {
-      shortStory.scoreRatings.rating.splice(
-        shortStory.scoreRatings.raterId.indexOf(userId),
+      shortStory.scoreRatings?.rating?.splice(
+        shortStory.scoreRatings.raterId!.indexOf(userId as any),
         1,
         rateDetails.rating
       )
 
-      const ratedStories = findBook.shortStories.filter((story) =>
-        story.scoreRatings.raterId.includes(userId)
-      )
-      const newTotalRating = ratedStories.reduce((acc, current) => {
+      const ratedStories = findBook.shortStories?.filter((story) =>
+        story.scoreRatings?.raterId?.includes(userId as any)
+      ) as ShortBook[]
+      const newTotalRating = ratedStories?.reduce((acc, current) => {
         return (
           acc +
-          current.scoreRatings.rating[
-            current.scoreRatings.raterId.indexOf(userId)
-          ]
+          (current?.scoreRatings?.rating
+            ? current.scoreRatings.rating[
+                current.scoreRatings.raterId!.indexOf(userId as any)
+              ]
+            : 0)
         )
-      }, 0)
+      }, 0) as number
       const newRating = newTotalRating / ratedStories.length
-      const bookScoreUserArray = findBook.scoreRatings.raterId
-      const ratingBookIndex = bookScoreUserArray.indexOf(userId)
+      const bookScoreUserArray = findBook.scoreRatings?.raterId
+      const ratingBookIndex = bookScoreUserArray?.indexOf(
+        userId as any
+      ) as number
 
-      const userScoreBookArray = findUser.userInfo.books.booksScored
-      const ratingUserIndex = userScoreBookArray.indexOf(bookId)
+      const userScoreBookArray = findUser.userInfo?.books?.booksScored
+      const ratingUserIndex = userScoreBookArray?.indexOf(
+        bookId as any
+      ) as number
 
-      findUser.userInfo.books.score.splice(ratingUserIndex, 1, newRating)
-      findBook.scoreRatings.rating.splice(ratingBookIndex, 1, newRating)
+      findUser.userInfo?.books?.score.splice(ratingUserIndex, 1, newRating)
+      findBook.scoreRatings?.rating?.splice(ratingBookIndex, 1, newRating)
 
       await findUser.save()
       await findBook.save()
@@ -161,13 +172,13 @@ const editShortStoryRating = async (req, res) => {
     }
   } catch (error) {
     console.log(error)
-    return res.status(500).json({ error: error.message })
+    return res.status(500).json({ error })
   }
 }
 
-const editBookComment = async (req, res) => {
+export const editBookComment = async (req: AuthRequest, res: Response) => {
   try {
-    const userId = req.user._id.toString()
+    const userId = req.user?._id.toString()
     const bookId = req.params.bookId
     const commentDetails = req.body
 
@@ -175,18 +186,22 @@ const editBookComment = async (req, res) => {
     const findUser = await User.findOne({ _id: userId })
 
     if (findBook && findUser) {
-      const bookScoreUserArray = findBook.commentInfo.commentId
-      const userScoreBookArray = findUser.userInfo.books.booksCommented
+      const bookScoreUserArray = findBook.commentInfo?.commentId
+      const userScoreBookArray = findUser.userInfo?.books?.booksCommented
 
-      const commentBookIndex = bookScoreUserArray.indexOf(userId)
-      const commentUserIndex = userScoreBookArray.indexOf(bookId)
+      const commentBookIndex = bookScoreUserArray?.indexOf(
+        userId as any
+      ) as number
+      const commentUserIndex = userScoreBookArray?.indexOf(
+        bookId as any
+      ) as number
 
-      findBook.commentInfo.comments.splice(
+      findBook.commentInfo?.comments?.splice(
         commentBookIndex,
         1,
         commentDetails.comments
       )
-      findUser.userInfo.books.comments.splice(
+      findUser.userInfo?.books?.comments.splice(
         commentUserIndex,
         1,
         commentDetails.comments
@@ -199,14 +214,6 @@ const editBookComment = async (req, res) => {
       return res.status(404).json({ msg: "Book or user not found" })
     }
   } catch (error) {
-    console.log(error)
-    return res.status(500).json({ error: error.message })
+    return res.status(500).json({ error })
   }
-}
-
-module.exports = {
-  editBook,
-  editBookRating,
-  editBookComment,
-  editShortStoryRating,
 }

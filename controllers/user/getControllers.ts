@@ -1,7 +1,9 @@
-const User = require("../../schema/User")
+import User from "../../schema/User"
+import { AuthRequest } from "../../types/auth"
+import { Response } from "express"
 
 // View one profile user
-const viewOneUserProfile = async (req, res) => {
+export const viewOneUserProfile = async (req: AuthRequest, res: Response) => {
   const username = req.params.username
   try {
     const user = await User.findOne({ username }).select("-password")
@@ -11,12 +13,12 @@ const viewOneUserProfile = async (req, res) => {
       return res.status(404).json({ msg: "User not found" })
     }
   } catch (error) {
-    res.status(500).json({ error: error.message })
+    res.status(500).json({ error })
   }
 }
 
 // View one profile user with id
-const viewOneUserProfileId = async (req, res) => {
+export const viewOneUserProfileId = async (req: AuthRequest, res: Response) => {
   const userId = req.params.id
   try {
     const user = await User.findOne({ _id: userId }).select("-password")
@@ -26,12 +28,12 @@ const viewOneUserProfileId = async (req, res) => {
       return res.status(404).json({ msg: "User not found" })
     }
   } catch (error) {
-    res.status(500).json({ error: error.message })
+    res.status(500).json({ error })
   }
 }
 
 // View all profile user
-const viewAllUserProfile = async (req, res) => {
+export const viewAllUserProfile = async (req: AuthRequest, res: Response) => {
   try {
     const user = await User.find().select("-password")
     if (user.length === 0) {
@@ -40,12 +42,6 @@ const viewAllUserProfile = async (req, res) => {
       res.status(200).json(user)
     }
   } catch (error) {
-    res.status(500).json({ error: error.message })
+    res.status(500).json({ error })
   }
-}
-
-module.exports = {
-  viewOneUserProfile,
-  viewAllUserProfile,
-  viewOneUserProfileId,
 }

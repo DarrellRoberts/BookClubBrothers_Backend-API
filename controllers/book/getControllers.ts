@@ -1,0 +1,130 @@
+import { Response } from "express"
+import Book from "../../schema/Book"
+import { AuthRequest, ShortBook } from "../../types/index"
+import { ObjectId } from "mongoose"
+
+export const getAllBooks = async (req: AuthRequest, res: Response) => {
+  try {
+    const books = await Book.find().sort({ dateOfMeeting: -1 })
+    if (books.length === 0) {
+      return res.status(200).json({ msg: "No books exist" })
+    }
+    res.status(200).json(books)
+  } catch (error) {
+    res.status(500).json({ error })
+  }
+}
+
+export const getLimitBooks = async (req: AuthRequest, res: Response) => {
+  try {
+    const bookLimit = parseInt(req.params.bookLimit)
+    if (isNaN(bookLimit) || bookLimit < 0) {
+      return res.status(400).json({
+        error: "Invalid bookLimit parameter. Must be a non-negative integer.",
+      })
+    }
+    const books = await Book.find().sort({ dateOfMeeting: -1 }).limit(bookLimit)
+    if (books.length === 0) {
+      return res.status(200).json({ msg: "No books exist" })
+    }
+    res.status(200).json(books)
+  } catch (error) {
+    const errorMessage =
+      error instanceof Error ? error.message : "Internal server error"
+    res.status(500).json({ error: errorMessage })
+  }
+}
+
+export const getOneBook = async (req: AuthRequest, res: Response) => {
+  try {
+    const bookId = req.params.bookId
+    const books = await Book.findOne({ _id: bookId })
+    // .populate("suggestedBy", ["name"]);
+    if (!books) {
+      return res.status(404).json({ msg: "Book not found" })
+    }
+    res.status(200).json(books)
+  } catch (error) {
+    res.status(500).json({ error })
+  }
+}
+
+export const getOneBookTitle = async (req: AuthRequest, res: Response) => {
+  try {
+    const bookTitle = req.params.bookTitle
+    const books = await Book.findOne({ title: bookTitle })
+    // .populate("suggestedBy", ["name"]);
+    if (!books) {
+      return res.status(404).json({ msg: "Book not found" })
+    }
+    res.status(200).json(books)
+  } catch (error) {
+    res.status(500).json({ error })
+  }
+}
+
+export const getBookGenre = async (req: AuthRequest, res: Response) => {
+  try {
+    const bookGenre = req.params.bookGenre
+    const books = await Book.find({ genre: [[bookGenre]] })
+    // .populate("suggestedBy", ["name"]);
+    if (!books) {
+      return res.status(404).json({ msg: "Book not found" })
+    }
+    res.status(200).json(books)
+  } catch (error) {
+    res.status(500).json({ error })
+  }
+}
+
+export const getUnreadBooks = async (req: AuthRequest, res: Response) => {
+  try {
+    const books = await Book.find({ read: false })
+    console.log("Found books:", books)
+    if (!books) {
+      return res.status(404).json({ msg: "Book not found" })
+    }
+    res.status(200).json(books)
+  } catch (error) {
+    res.status(500).json({ error })
+  }
+}
+
+export const getTotalScore = async (req: AuthRequest, res: Response) => {
+  try {
+    const books = await Book.find({}, { totalScore: 1, title: 1, _id: 0 }).sort(
+      { totalScore: -1 }
+    )
+    if (!books) {
+      return res.status(404).json({ msg: "Book not found" })
+    }
+    res.status(200).json(books)
+  } catch (error) {
+    res.status(500).json({ error })
+  }
+}
+
+export const getShortStory = async (req: AuthRequest, res: Response) => {
+  try {
+    const shortStoryId = req.params.shortStoryId
+    const bookId = req.params.bookId
+
+    const book = await Book.findOne({ _id: bookId })
+
+    if (!book) {
+      return res.status(404).json({ msg: "Book not found" })
+    } else if (!book.genre.includes("Anthology")) {
+      return res.status(405).json({ msg: "Book has no short stories" })
+    } else {
+      const shortStory = book.shortStories?.find(
+        (story) => story._id.toString() === shortStoryId
+      )
+      if (!shortStory) {
+        return res.status(404).json({ msg: "Short story does not exist" })
+      }
+      res.status(200).json(shortStory)
+    }
+  } catch (error) {
+    res.status(500).json({ error })
+  }
+}

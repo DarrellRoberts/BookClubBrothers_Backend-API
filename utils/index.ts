@@ -1,0 +1,6 @@
+export { commentBadge } from "./badges/commentBadge"
+export { firstBookBadge } from "./badges/firstBookBadge"
+export { updateUserLoneWolfBadge } from "./badges/loneWolfBadge"
+export { updateUserMostBooksBadge } from "./badges/mostBooksBadge"
+export { punctualBadge } from "./badges/punctualBadge"
+export { calculateAverageRating } from "./bookScore"

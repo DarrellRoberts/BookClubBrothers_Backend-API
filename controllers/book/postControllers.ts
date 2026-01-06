@@ -1,15 +1,18 @@
-const Book = require("../../schema/Book")
-const User = require("../../schema/User")
-const {
+import Book from "../../schema/Book"
+import User from "../../schema/User"
+import { AuthRequest } from "../../types/auth"
+import { Response } from "express"
+import {
   calculateAverageRating,
   commentBadge,
   firstBookBadge,
   updateUserLoneWolfBadge,
   updateUserMostBooksBadge,
   punctualBadge,
-} = require("../../utils/index")
+} from "../../utils/index"
+import { ShortBook } from "../../types/book"
 
-const createBook = async (req, res) => {
+export const createBook = async (req: AuthRequest, res: Response) => {
   try {
     const bookInfo = req.body
     const book = await Book.create({
@@ -28,12 +31,11 @@ const createBook = async (req, res) => {
     })
     res.status(200).json(book)
   } catch (error) {
-    res.status(500).json({ error: error.message })
-    console.log(error, "from controller")
+    res.status(500).json({ error })
   }
 }
 
-const bookImage = async (req, res) => {
+export const bookImage = async (req: AuthRequest, res: Response) => {
   try {
     const bookId = req.params.bookId
     if (req.file && req.file.path) {
@@ -44,21 +46,20 @@ const bookImage = async (req, res) => {
         },
         { new: true }
       )
-      await bookImage.save()
+      await bookImage?.save()
       return res.status(200).json({ msg: "image successfully saved" })
     } else {
       console.log("REQ FILE:" + req.file)
       res.status(422).json({ msg: "invalid file" })
     }
   } catch (error) {
-    console.error(error)
-    res.status(500).json({ error: error.message })
+    res.status(500).json({ error })
   }
 }
 
-const submitBookRating = async (req, res) => {
+export const submitBookRating = async (req: AuthRequest, res: Response) => {
   try {
-    const userId = req.user._id.toString()
+    const userId = req.user!._id.toString()
     const bookId = req.params.bookId
     const rateDetails = req.body
 
@@ -66,20 +67,20 @@ const submitBookRating = async (req, res) => {
     const findUser = await User.findOne({ _id: userId })
 
     if (findBook && findUser) {
-      const bookScoreUserArray = findBook.scoreRatings.raterId
+      const bookScoreUserArray = findBook.scoreRatings?.raterId
 
-      const hasUserRated = bookScoreUserArray.some(
+      const hasUserRated = bookScoreUserArray?.some(
         (raterId) => raterId.toString() === userId
       )
 
       if (hasUserRated) {
         return res.status(200).json({ msg: "Your rating is already submitted" })
       } else {
-        findUser.userInfo.books.booksScored.push(bookId)
-        findUser.userInfo.books.score.push(rateDetails.rating)
+        findUser.userInfo?.books?.booksScored.push(bookId as any)
+        findUser.userInfo?.books?.score.push(rateDetails.rating)
 
-        findBook.scoreRatings.raterId.push(userId)
-        findBook.scoreRatings.rating.push(rateDetails.rating)
+        findBook.scoreRatings?.raterId?.push(userId as any)
+        findBook.scoreRatings?.rating?.push(rateDetails.rating)
 
         await findUser.save()
         await findBook.save()
@@ -94,23 +95,22 @@ const submitBookRating = async (req, res) => {
     updateUserMostBooksBadge(userId)
     calculateAverageRating(bookId)
   } catch (error) {
-    console.log(error)
-    return res.status(500).json({ error: error.message })
+    return res.status(500).json({ error })
   }
 }
 
-const submitBookComment = async (req, res) => {
+export const submitBookComment = async (req: AuthRequest, res: Response) => {
   try {
-    const userId = req.user._id.toString()
+    const userId = req.user!._id.toString()
     const bookId = req.params.bookId
     const commentDetails = req.body
 
     const findBook = await Book.findOne({ _id: bookId })
     const findUser = await User.findOne({ _id: userId })
     if (findBook && findUser) {
-      const bookScoreUserArray = findBook.commentInfo.commentId
+      const bookScoreUserArray = findBook.commentInfo?.commentId
 
-      const hasUserRated = bookScoreUserArray.some(
+      const hasUserRated = bookScoreUserArray?.some(
         (raterId) => raterId.toString() === userId
       )
 
@@ -119,11 +119,11 @@ const submitBookComment = async (req, res) => {
           .status(200)
           .json({ msg: "Your comment is already submitted" })
       } else {
-        findUser.userInfo.books.booksCommented.push(bookId)
-        findUser.userInfo.books.comments.push(commentDetails.comments)
+        findUser.userInfo?.books?.booksCommented.push(bookId as any)
+        findUser.userInfo?.books?.comments.push(commentDetails.comments)
 
-        findBook.commentInfo.commentId.push(userId)
-        findBook.commentInfo.comments.push(commentDetails.comments)
+        findBook.commentInfo?.commentId?.push(userId as any)
+        findBook.commentInfo?.comments?.push(commentDetails.comments)
 
         await findUser.save()
         await findBook.save()
@@ -134,14 +134,13 @@ const submitBookComment = async (req, res) => {
       return res.status(404).json({ msg: "Book or user not found" })
     }
   } catch (error) {
-    console.log(error)
-    return res.status(500).json({ error: error.message })
+    return res.status(500).json({ error })
   }
 }
 
-const createUnreadBook = async (req, res) => {
+export const createUnreadBook = async (req: AuthRequest, res: Response) => {
   try {
-    const userId = req.user._id
+    const userId = req.user!._id
     const bookInfo = req.body
     const book = await Book.create({
       title: bookInfo.title,
@@ -159,12 +158,11 @@ const createUnreadBook = async (req, res) => {
     })
     res.status(200).json(book)
   } catch (error) {
-    res.status(500).json({ error: error.message })
-    console.log(error, "from controller")
+    res.status(500).json({ error })
   }
 }
 
-const createShortStory = async (req, res) => {
+export const createShortStory = async (req: AuthRequest, res: Response) => {
   try {
     const bookId = req.params.bookId
 
@@ -177,18 +175,21 @@ const createShortStory = async (req, res) => {
     } else {
       const shortStory = req.body
       shortStory.parentId = bookId.toString()
-      findBook.shortStories.push(shortStory)
+      findBook.shortStories?.push(shortStory)
       await findBook.save()
       res.status(200).json(shortStory)
     }
   } catch (error) {
-    res.status(500).json({ error: error.message })
+    res.status(500).json({ error })
   }
 }
 
-const submitShortStoryRating = async (req, res) => {
+export const submitShortStoryRating = async (
+  req: AuthRequest,
+  res: Response
+) => {
   try {
-    const userId = req.user._id.toString()
+    const userId = req.user!._id.toString()
     const bookId = req.params.bookId
     const shortStoryId = req.params.shortStoryId
     const rateDetails = req.body
@@ -201,61 +202,67 @@ const submitShortStoryRating = async (req, res) => {
     } else if (!findBook.genre[0].includes("Anthology")) {
       return res.status(405).json({ msg: "Book has no short stories" })
     } else {
-      const shortStory = findBook.shortStories.find(
+      const shortStory = findBook.shortStories?.find(
         (story) => story._id.toString() === shortStoryId
       )
       if (!shortStory) {
         return res.status(404).json({ msg: "Short story does not exist" })
       }
-      const bookScoreUserArray = findBook.scoreRatings.raterId
+      const bookScoreUserArray = findBook.scoreRatings?.raterId
 
-      const hasUserRated = bookScoreUserArray.some(
+      const hasUserRated = bookScoreUserArray?.some(
         (raterId) => raterId.toString() === userId
       )
 
       if (hasUserRated) {
-        const hasUserRatedShortStory = shortStory.scoreRatings.raterId.some(
+        const hasUserRatedShortStory = shortStory.scoreRatings?.raterId?.some(
           (raterId) => raterId.toString() === userId
         )
         if (hasUserRatedShortStory) {
           return res.status(200).json({ msg: "User has already rated" })
         }
-        shortStory.scoreRatings.raterId.push(userId)
-        shortStory.scoreRatings.rating.push(rateDetails.rating)
-        const ratedStories = findBook.shortStories.filter((story) =>
-          story.scoreRatings.raterId.includes(userId)
-        )
-        const newTotalRating = ratedStories.reduce((acc, current) => {
+        shortStory.scoreRatings?.raterId?.push(userId as any)
+        shortStory.scoreRatings?.rating?.push(rateDetails.rating)
+        const ratedStories = findBook.shortStories?.filter((story) =>
+          story.scoreRatings?.raterId?.includes(userId as any)
+        ) as ShortBook[]
+        const newTotalRating = ratedStories?.reduce((acc, current) => {
           return (
             acc +
-            current.scoreRatings.rating[
-              current.scoreRatings.raterId.indexOf(userId)
-            ]
+            (current?.scoreRatings?.rating
+              ? current.scoreRatings.rating[
+                  current.scoreRatings.raterId!.indexOf(userId as any)
+                ]
+              : 0)
           )
-        }, 0)
+        }, 0) as number
         const newRating = newTotalRating / ratedStories.length
-        const bookScoreUserArray = findBook.scoreRatings.raterId
-        const ratingBookIndex = bookScoreUserArray.indexOf(userId)
+        const bookScoreUserArray = findBook.scoreRatings?.raterId
+        const ratingBookIndex = bookScoreUserArray?.indexOf(
+          userId as any
+        ) as number
 
-        const userScoreBookArray = findUser.userInfo.books.booksScored
-        const ratingUserIndex = userScoreBookArray.indexOf(bookId)
+        const userScoreBookArray = findUser?.userInfo?.books?.booksScored
+        const ratingUserIndex = userScoreBookArray?.indexOf(
+          bookId as any
+        ) as number
 
-        findUser.userInfo.books.score.splice(ratingUserIndex, 1, newRating)
-        findBook.scoreRatings.rating.splice(ratingBookIndex, 1, newRating)
+        findUser?.userInfo?.books?.score.splice(ratingUserIndex, 1, newRating)
+        findBook?.scoreRatings?.rating?.splice(ratingBookIndex, 1, newRating)
 
-        await findUser.save()
-        await findBook.save()
+        await findUser?.save()
+        await findBook?.save()
         calculateAverageRating(bookId)
         return res.status(200).json({ msg: "Rating submitted successfully" })
       } else {
-        shortStory.scoreRatings.raterId.push(userId)
-        shortStory.scoreRatings.rating.push(rateDetails.rating)
-        findUser.userInfo.books.booksScored.push(bookId)
-        findUser.userInfo.books.score.push(rateDetails.rating)
-        findBook.scoreRatings.raterId.push(userId)
-        findBook.scoreRatings.rating.push(rateDetails.rating)
+        shortStory.scoreRatings?.raterId?.push(userId as any)
+        shortStory.scoreRatings?.rating?.push(rateDetails.rating)
+        findUser?.userInfo?.books?.booksScored.push(bookId as any)
+        findUser?.userInfo?.books?.score.push(rateDetails.rating)
+        findBook?.scoreRatings?.raterId?.push(userId as any)
+        findBook?.scoreRatings?.rating?.push(rateDetails.rating)
 
-        await findUser.save()
+        await findUser?.save()
         await findBook.save()
         calculateAverageRating(bookId)
         return res
@@ -264,17 +271,6 @@ const submitShortStoryRating = async (req, res) => {
       }
     }
   } catch (error) {
-    console.log(error)
-    return res.status(500).json({ error: error.message })
+    return res.status(500).json({ error })
   }
-}
-
-module.exports = {
-  createBook,
-  bookImage,
-  submitBookRating,
-  submitBookComment,
-  createUnreadBook,
-  createShortStory,
-  submitShortStoryRating,
 }

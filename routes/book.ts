@@ -1,5 +1,5 @@
-const express = require("express")
-const {
+import express from "express"
+import {
   getAllBooks,
   getLimitBooks,
   getOneBook,
@@ -8,8 +8,9 @@ const {
   getTotalScore,
   getUnreadBooks,
   getShortStory,
-} = require("../controllers/book/getControllers")
-const {
+} from "../controllers/book/getControllers"
+
+import {
   createBook,
   bookImage,
   submitBookRating,
@@ -17,21 +18,23 @@ const {
   submitBookComment,
   createShortStory,
   submitShortStoryRating,
-} = require("../controllers/book/postControllers")
-const {
+} from "../controllers/book/postControllers"
+
+import {
   editBook,
   editBookRating,
   editBookComment,
   editShortStoryRating,
-} = require("../controllers/book/putControllers")
-const {
+} from "../controllers/book/putControllers"
+
+import {
   deleteBook,
   deleteBookComment,
-} = require("../controllers/book/deleteControllers")
+} from "../controllers/book/deleteControllers"
 
-const checkAuth = require("../middlewares/checkAuth")
+import checkAuth from "../middlewares/checkAuth"
+import upload from "../service/upload"
 
-const upload = require("../service/upload")
 const app = express.Router()
 
 app.route("/").get(getAllBooks).post(checkAuth, createBook)
@@ -55,4 +58,4 @@ app.put("/:bookId/:shortStoryId", checkAuth, editShortStoryRating)
 app.delete("/:bookId", checkAuth, deleteBook)
 app.delete("/comment/delete/:bookId", checkAuth, deleteBookComment)
 
-module.exports = app
+export default app
