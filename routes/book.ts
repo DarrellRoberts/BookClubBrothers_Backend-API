@@ -8,7 +8,7 @@ import {
   getTotalScore,
   getUnreadBooks,
   getShortStory,
-} from "../controllers/book/getControllers.js"
+} from "../controllers/book/getControllers"
 
 import {
   createBook,
@@ -18,22 +18,22 @@ import {
   submitBookComment,
   createShortStory,
   submitShortStoryRating,
-} from "../controllers/book/postControllers.js"
+} from "../controllers/book/postControllers"
 
 import {
   editBook,
   editBookRating,
   editBookComment,
   editShortStoryRating,
-} from "../controllers/book/putControllers.js"
+} from "../controllers/book/putControllers"
 
 import {
   deleteBook,
   deleteBookComment,
-} from "../controllers/book/deleteControllers.js"
+} from "../controllers/book/deleteControllers"
 
-import checkAuth from "../middlewares/checkAuth.js"
-import upload from "../service/upload.js"
+import checkAuth from "../middlewares/checkAuth"
+import upload from "../service/upload"
 
 const app = express.Router()
 

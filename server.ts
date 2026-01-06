@@ -1,9 +1,9 @@
 import express, { Request, Response } from "express"
 import cors from "cors"
 import dotenv from "dotenv"
-import bookRoutes from "./routes/book.js"
-import userRoutes from "./routes/user.js"
-import { connectDB } from "./dbinit.ts"
+import bookRoutes from "./routes/book"
+import userRoutes from "./routes/user"
+import { connectDB } from "./dbinit"
 
 dotenv.config()
 

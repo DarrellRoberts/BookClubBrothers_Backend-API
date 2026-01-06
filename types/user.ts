@@ -1,4 +1,14 @@
-import { Schema } from "mongoose"
+import { Model, Schema } from "mongoose"
+
+export interface UserModel extends Model<User> {
+  signup(userInfo: any): Promise<any>
+  login(username: string, password: string): Promise<any>
+  resetPassword(
+    username: string,
+    password: string,
+    confirm: string
+  ): Promise<any>
+}
 
 export interface User {
   userInfo: {

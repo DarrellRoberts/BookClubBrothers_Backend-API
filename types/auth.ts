@@ -6,10 +6,9 @@ export interface AuthRequest<
   ReqBody = any,
   ReqQuery = any
 > extends Request<P, ResBody, ReqBody, ReqQuery> {
-  user: {
+  user?: {
     _id: string
     username: string
-    // You can add 'username' or 'email' here if your JWT contains them
   }
-  file: any
+  file?: any
 }

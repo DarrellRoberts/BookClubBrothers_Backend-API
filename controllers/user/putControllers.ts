@@ -1,7 +1,9 @@
 import User from "../../schema/User"
+import { AuthRequest } from "../../types/auth"
+import { Response } from "express"
 
 // Edit user
-export const editUsername = async (req, res) => {
+export const editUsername = async (req: AuthRequest, res: Response) => {
   try {
     const userId = req.params.userId
     const { username } = req.body
@@ -15,7 +17,6 @@ export const editUsername = async (req, res) => {
       }
     )
     if (!updateUser) {
-      console.log(id)
       return res.status(404).json({ error: `${userId} user not found` })
     }
     console.log(req.body)
@@ -27,7 +28,7 @@ export const editUsername = async (req, res) => {
 }
 
 // Edit userInfo
-export const editUserInfo = async (req, res) => {
+export const editUserInfo = async (req: AuthRequest, res: Response) => {
   try {
     const userId = req.params.userId
     const updatedInfo = req.body
@@ -49,7 +50,6 @@ export const editUserInfo = async (req, res) => {
       }
     )
     if (!updateUser) {
-      console.log(id)
       return res.status(404).json({ error: `${userId} user not found` })
     }
     console.log(req.body)

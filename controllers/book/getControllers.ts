@@ -1,6 +1,6 @@
 import { Response } from "express"
-import Book from "../../schema/Book.ts"
-import { AuthRequest, ShortBook } from "../../types/index.ts"
+import Book from "../../schema/Book"
+import { AuthRequest, ShortBook } from "../../types/index"
 import { ObjectId } from "mongoose"
 
 export const getAllBooks = async (req: AuthRequest, res: Response) => {
@@ -116,7 +116,7 @@ export const getShortStory = async (req: AuthRequest, res: Response) => {
     } else if (!book.genre.includes("Anthology")) {
       return res.status(405).json({ msg: "Book has no short stories" })
     } else {
-      const shortStory = book.shortStories.find(
+      const shortStory = book.shortStories?.find(
         (story) => story._id.toString() === shortStoryId
       )
       if (!shortStory) {

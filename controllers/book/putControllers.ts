@@ -1,20 +1,21 @@
-import Book from "../../schema/Book.ts"
-import User from "../../schema/User.ts"
-import { AuthRequest } from "../../types/auth.ts"
+import Book from "../../schema/Book"
+import User from "../../schema/User"
+import { AuthRequest } from "../../types/auth"
 import { Response } from "express"
-import { calculateAverageRating } from "../../utils/index.ts"
+import { calculateAverageRating } from "../../utils/index"
+import { ShortBook } from "../../types/book"
 
 export const editBook = async (req: AuthRequest, res: Response) => {
   try {
     const bookId = req.params.bookId
-    const userId = req.user._id.toString()
+    const userId = req.user?._id.toString()
 
     const book = await Book.findById(bookId)
     const suggestedById = book?.suggestedBy?.toString()
 
-    if (suggestedById || userId === "65723ac894b239fe25fe6871") {
-      if (suggestedById !== userId && userId !== "65723ac894b239fe25fe6871") {
-        return res.status(401).json({
+    if (suggestedById || userId === process.env.ADMIN_ID) {
+      if (suggestedById !== userId && userId !== process.env.ADMIN_ID) {
+        return res.status(403).json({
           error: `${userId} does not have the permission to edit this book`,
         })
       }
@@ -68,7 +69,7 @@ export const editBook = async (req: AuthRequest, res: Response) => {
 
 export const editBookRating = async (req: AuthRequest, res: Response) => {
   try {
-    const userId = req.user._id.toString()
+    const userId = req.user?._id.toString()
     const bookId = req.params.bookId
     const rateDetails = req.body
 
@@ -91,7 +92,7 @@ export const editBookRating = async (req: AuthRequest, res: Response) => {
         1,
         rateDetails.rating
       )
-      findBook.scoreRatings?.rating.splice(
+      findBook.scoreRatings?.rating?.splice(
         ratingBookIndex,
         1,
         rateDetails.rating
@@ -110,7 +111,7 @@ export const editBookRating = async (req: AuthRequest, res: Response) => {
 
 export const editShortStoryRating = async (req: AuthRequest, res: Response) => {
   try {
-    const userId = req.user._id.toString()
+    const userId = req.user?._id.toString()
     const bookId = req.params.bookId
     const shortStoryId = req.params.shortStoryId
     const rateDetails = req.body
@@ -118,7 +119,7 @@ export const editShortStoryRating = async (req: AuthRequest, res: Response) => {
     const findBook = await Book.findOne({ _id: bookId })
     const findUser = await User.findOne({ _id: userId })
 
-    const shortStory = findBook?.shortStories.find(
+    const shortStory = findBook?.shortStories?.find(
       (story) => story._id.toString() === shortStoryId
     )
 
@@ -127,16 +128,16 @@ export const editShortStoryRating = async (req: AuthRequest, res: Response) => {
     }
 
     if (findBook && findUser) {
-      shortStory.scoreRatings?.rating.splice(
-        shortStory.scoreRatings.raterId.indexOf(userId as any),
+      shortStory.scoreRatings?.rating?.splice(
+        shortStory.scoreRatings.raterId!.indexOf(userId as any),
         1,
         rateDetails.rating
       )
 
-      const ratedStories = findBook.shortStories.filter((story) =>
+      const ratedStories = findBook.shortStories?.filter((story) =>
         story.scoreRatings?.raterId?.includes(userId as any)
-      )
-      const newTotalRating = ratedStories.reduce((acc, current) => {
+      ) as ShortBook[]
+      const newTotalRating = ratedStories?.reduce((acc, current) => {
         return (
           acc +
           (current?.scoreRatings?.rating
@@ -145,7 +146,7 @@ export const editShortStoryRating = async (req: AuthRequest, res: Response) => {
               ]
             : 0)
         )
-      }, 0)
+      }, 0) as number
       const newRating = newTotalRating / ratedStories.length
       const bookScoreUserArray = findBook.scoreRatings?.raterId
       const ratingBookIndex = bookScoreUserArray?.indexOf(
@@ -158,7 +159,7 @@ export const editShortStoryRating = async (req: AuthRequest, res: Response) => {
       ) as number
 
       findUser.userInfo?.books?.score.splice(ratingUserIndex, 1, newRating)
-      findBook.scoreRatings?.rating.splice(ratingBookIndex, 1, newRating)
+      findBook.scoreRatings?.rating?.splice(ratingBookIndex, 1, newRating)
 
       await findUser.save()
       await findBook.save()
@@ -177,7 +178,7 @@ export const editShortStoryRating = async (req: AuthRequest, res: Response) => {
 
 export const editBookComment = async (req: AuthRequest, res: Response) => {
   try {
-    const userId = req.user._id.toString()
+    const userId = req.user?._id.toString()
     const bookId = req.params.bookId
     const commentDetails = req.body
 
@@ -195,7 +196,7 @@ export const editBookComment = async (req: AuthRequest, res: Response) => {
         bookId as any
       ) as number
 
-      findBook.commentInfo?.comments.splice(
+      findBook.commentInfo?.comments?.splice(
         commentBookIndex,
         1,
         commentDetails.comments

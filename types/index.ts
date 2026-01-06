@@ -1,3 +1,3 @@
-export * from "./auth.ts"
-export * from "./book.ts"
-export * from "./user.ts"
+export * from "./auth"
+export * from "./book"
+export * from "./user"

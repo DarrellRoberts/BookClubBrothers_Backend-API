@@ -1,14 +1,7 @@
-import { createRequire } from "module"
-const require = createRequire(import.meta.url)
-
 import { v2 as cloudinary } from "cloudinary"
+import multerStorage from "multer-storage-cloudinary"
 import multer from "multer"
 
-// Load the library
-const multerStorage = require("multer-storage-cloudinary")
-
-// FORCE find the constructor
-// Sometimes it is multerStorage, sometimes multerStorage.CloudinaryStorage
 const CloudinaryStorage = multerStorage.CloudinaryStorage || multerStorage
 
 console.log("Debug - Type of CloudinaryStorage:", typeof CloudinaryStorage)

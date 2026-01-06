@@ -1,4 +1,4 @@
-import Book from "../schema/Book.ts"
+import Book from "../schema/Book"
 
 // Calculate and update the average book rating
 export const calculateAverageRating = async (bookId: string) => {

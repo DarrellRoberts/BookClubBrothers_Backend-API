@@ -1,6 +1,6 @@
-import Book from "../../schema/Book.ts"
-import User from "../../schema/User.ts"
-import { AuthRequest } from "../../types/auth.ts"
+import Book from "../../schema/Book"
+import User from "../../schema/User"
+import { AuthRequest } from "../../types/auth"
 import { Response } from "express"
 import {
   calculateAverageRating,
@@ -9,7 +9,8 @@ import {
   updateUserLoneWolfBadge,
   updateUserMostBooksBadge,
   punctualBadge,
-} from "../../utils/index.ts"
+} from "../../utils/index"
+import { ShortBook } from "../../types/book"
 
 export const createBook = async (req: AuthRequest, res: Response) => {
   try {
@@ -58,7 +59,7 @@ export const bookImage = async (req: AuthRequest, res: Response) => {
 
 export const submitBookRating = async (req: AuthRequest, res: Response) => {
   try {
-    const userId = req.user._id.toString()
+    const userId = req.user!._id.toString()
     const bookId = req.params.bookId
     const rateDetails = req.body
 
@@ -78,8 +79,8 @@ export const submitBookRating = async (req: AuthRequest, res: Response) => {
         findUser.userInfo?.books?.booksScored.push(bookId as any)
         findUser.userInfo?.books?.score.push(rateDetails.rating)
 
-        findBook.scoreRatings?.raterId.push(userId as any)
-        findBook.scoreRatings?.rating.push(rateDetails.rating)
+        findBook.scoreRatings?.raterId?.push(userId as any)
+        findBook.scoreRatings?.rating?.push(rateDetails.rating)
 
         await findUser.save()
         await findBook.save()
@@ -100,7 +101,7 @@ export const submitBookRating = async (req: AuthRequest, res: Response) => {
 
 export const submitBookComment = async (req: AuthRequest, res: Response) => {
   try {
-    const userId = req.user._id.toString()
+    const userId = req.user!._id.toString()
     const bookId = req.params.bookId
     const commentDetails = req.body
 
@@ -121,8 +122,8 @@ export const submitBookComment = async (req: AuthRequest, res: Response) => {
         findUser.userInfo?.books?.booksCommented.push(bookId as any)
         findUser.userInfo?.books?.comments.push(commentDetails.comments)
 
-        findBook.commentInfo?.commentId.push(userId as any)
-        findBook.commentInfo?.comments.push(commentDetails.comments)
+        findBook.commentInfo?.commentId?.push(userId as any)
+        findBook.commentInfo?.comments?.push(commentDetails.comments)
 
         await findUser.save()
         await findBook.save()
@@ -139,7 +140,7 @@ export const submitBookComment = async (req: AuthRequest, res: Response) => {
 
 export const createUnreadBook = async (req: AuthRequest, res: Response) => {
   try {
-    const userId = req.user._id
+    const userId = req.user!._id
     const bookInfo = req.body
     const book = await Book.create({
       title: bookInfo.title,
@@ -174,7 +175,7 @@ export const createShortStory = async (req: AuthRequest, res: Response) => {
     } else {
       const shortStory = req.body
       shortStory.parentId = bookId.toString()
-      findBook.shortStories.push(shortStory)
+      findBook.shortStories?.push(shortStory)
       await findBook.save()
       res.status(200).json(shortStory)
     }
@@ -188,7 +189,7 @@ export const submitShortStoryRating = async (
   res: Response
 ) => {
   try {
-    const userId = req.user._id.toString()
+    const userId = req.user!._id.toString()
     const bookId = req.params.bookId
     const shortStoryId = req.params.shortStoryId
     const rateDetails = req.body
@@ -201,7 +202,7 @@ export const submitShortStoryRating = async (
     } else if (!findBook.genre[0].includes("Anthology")) {
       return res.status(405).json({ msg: "Book has no short stories" })
     } else {
-      const shortStory = findBook.shortStories.find(
+      const shortStory = findBook.shortStories?.find(
         (story) => story._id.toString() === shortStoryId
       )
       if (!shortStory) {
@@ -214,17 +215,17 @@ export const submitShortStoryRating = async (
       )
 
       if (hasUserRated) {
-        const hasUserRatedShortStory = shortStory.scoreRatings?.raterId.some(
+        const hasUserRatedShortStory = shortStory.scoreRatings?.raterId?.some(
           (raterId) => raterId.toString() === userId
         )
         if (hasUserRatedShortStory) {
           return res.status(200).json({ msg: "User has already rated" })
         }
-        shortStory.scoreRatings?.raterId.push(userId as any)
-        shortStory.scoreRatings?.rating.push(rateDetails.rating)
-        const ratedStories = findBook.shortStories.filter((story) =>
+        shortStory.scoreRatings?.raterId?.push(userId as any)
+        shortStory.scoreRatings?.rating?.push(rateDetails.rating)
+        const ratedStories = findBook.shortStories?.filter((story) =>
           story.scoreRatings?.raterId?.includes(userId as any)
-        )
+        ) as ShortBook[]
         const newTotalRating = ratedStories?.reduce((acc, current) => {
           return (
             acc +
@@ -234,7 +235,7 @@ export const submitShortStoryRating = async (
                 ]
               : 0)
           )
-        }, 0)
+        }, 0) as number
         const newRating = newTotalRating / ratedStories.length
         const bookScoreUserArray = findBook.scoreRatings?.raterId
         const ratingBookIndex = bookScoreUserArray?.indexOf(
@@ -247,19 +248,19 @@ export const submitShortStoryRating = async (
         ) as number
 
         findUser?.userInfo?.books?.score.splice(ratingUserIndex, 1, newRating)
-        findBook?.scoreRatings?.rating.splice(ratingBookIndex, 1, newRating)
+        findBook?.scoreRatings?.rating?.splice(ratingBookIndex, 1, newRating)
 
         await findUser?.save()
         await findBook?.save()
         calculateAverageRating(bookId)
         return res.status(200).json({ msg: "Rating submitted successfully" })
       } else {
-        shortStory.scoreRatings?.raterId.push(userId as any)
-        shortStory.scoreRatings?.rating.push(rateDetails.rating)
+        shortStory.scoreRatings?.raterId?.push(userId as any)
+        shortStory.scoreRatings?.rating?.push(rateDetails.rating)
         findUser?.userInfo?.books?.booksScored.push(bookId as any)
         findUser?.userInfo?.books?.score.push(rateDetails.rating)
-        findBook?.scoreRatings?.raterId.push(userId as any)
-        findBook?.scoreRatings?.rating.push(rateDetails.rating)
+        findBook?.scoreRatings?.raterId?.push(userId as any)
+        findBook?.scoreRatings?.rating?.push(rateDetails.rating)
 
         await findUser?.save()
         await findBook.save()

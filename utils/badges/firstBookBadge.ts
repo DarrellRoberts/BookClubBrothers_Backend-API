@@ -1,13 +1,13 @@
-import User from "../../schema/User.ts"
+import User from "../../schema/User"
 
-export const firstBookBadge = async (userId) => {
+export const firstBookBadge = async (userId: string) => {
   try {
     const user = await User.findOne({ _id: userId })
     if (!user) {
       throw new Error("User not found")
     }
-    if (user.userInfo.books.booksScored.length >= 1) {
-      user.userInfo.badges.firstBook = true
+    if (user.userInfo!.books!.booksScored.length >= 1) {
+      user.userInfo!.badges!.firstBook = true
     }
     await user.save()
   } catch (err) {

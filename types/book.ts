@@ -4,18 +4,18 @@ export interface Book {
   author: string
   commentInfo?: {
     commentId?: Schema.Types.ObjectId[]
-    comments?: string[] | string
+    comments?: string[]
   }
-  dateOfMeeting?: string
-  actualDateOfMeeting?: string
+  dateOfMeeting?: Date
+  actualDateOfMeeting?: Date
   reviewImageURL?: string
-  genre: any
+  genre: string[]
   imageURL?: string
   pages: number
   read?: boolean
   scoreRatings?: {
     raterId?: Schema.Types.ObjectId[]
-    rating?: number[] | number
+    rating?: number[]
   }
   suggestedBy?: string
   shortStories?: ShortBook[]
@@ -32,7 +32,7 @@ export interface ShortBook {
   }
   commentInfo?: {
     commentId?: Schema.Types.ObjectId[]
-    comments?: string[] | string
+    comments?: string[]
   }
 
   parentId: Schema.Types.ObjectId

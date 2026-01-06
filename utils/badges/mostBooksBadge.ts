@@ -1,4 +1,4 @@
-import User from "../../schema/User.ts"
+import User from "../../schema/User"
 
 export const updateUserMostBooksBadge = async (userId: string) => {
   try {
@@ -22,7 +22,6 @@ export const updateUserMostBooksBadge = async (userId: string) => {
     }
     await user.save()
   } catch (err) {
-    console.error(err)
-    console.log("Error occurred updating most books badge")
+    console.log("Error occurred updating most books badge", err)
   }
 }

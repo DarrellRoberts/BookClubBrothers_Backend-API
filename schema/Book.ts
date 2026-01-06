@@ -1,5 +1,5 @@
 import mongoose from "mongoose"
-import { Book } from "../types/book.ts"
+import { Book } from "../types/book"
 
 const { Schema } = mongoose
 
@@ -132,5 +132,5 @@ const bookSchema = new Schema({
   },
 })
 
-const Book = mongoose.model("Book", bookSchema) satisfies Book
+const Book = mongoose.model<Book>("Book", bookSchema)
 export default Book

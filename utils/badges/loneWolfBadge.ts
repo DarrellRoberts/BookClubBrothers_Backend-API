@@ -1,7 +1,10 @@
-import User from "../../schema/User.ts"
-import Book from "../../schema/Book.ts"
+import User from "../../schema/User"
+import Book from "../../schema/Book"
 
-export const updateUserLoneWolfBadge = async (userId, bookId) => {
+export const updateUserLoneWolfBadge = async (
+  userId: string,
+  bookId: string
+) => {
   try {
     const user = await User.findOne({ _id: userId })
     const book = await Book.findOne({ _id: bookId })
@@ -11,8 +14,8 @@ export const updateUserLoneWolfBadge = async (userId, bookId) => {
     if (!book) {
       throw new Error("Book not found")
     }
-    if (book.scoreRatings.raterId.length === 1) {
-      user.userInfo.badges.loneWolf++
+    if (book.scoreRatings?.raterId?.length === 1) {
+      user.userInfo!.badges!.loneWolf++
     }
     await user.save()
   } catch (err) {

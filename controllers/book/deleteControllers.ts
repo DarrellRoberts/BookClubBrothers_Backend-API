@@ -1,19 +1,19 @@
 import { Response } from "express"
-import { AuthRequest } from "../../types/index.ts"
-import Book from "../../schema/Book.ts"
-import User from "../../schema/User.ts"
+import { AuthRequest } from "../../types/index"
+import Book from "../../schema/Book"
+import User from "../../schema/User"
 
 export const deleteBook = async (req: AuthRequest, res: Response) => {
   try {
     const bookId = req.params.bookId
-    const userId = req.user._id.toString()
+    const userId = req.user?._id.toString()
 
     const book = await Book.findById(bookId)
     const suggestedById = book?.suggestedBy?.toString()
 
-    if (suggestedById || userId === "65723ac894b239fe25fe6871") {
-      if (suggestedById !== userId && userId !== "65723ac894b239fe25fe6871") {
-        return res.status(401).json({
+    if (suggestedById || userId === process.env.ADMIN_ID) {
+      if (suggestedById !== userId && userId !== process.env.ADMIN_ID) {
+        return res.status(403).json({
           error: `${userId} does not have the permission to delete this book`,
         })
       }
@@ -30,7 +30,7 @@ export const deleteBook = async (req: AuthRequest, res: Response) => {
 
 export const deleteBookComment = async (req: AuthRequest, res: Response) => {
   try {
-    const userId = req.user._id.toString() as string
+    const userId = req.user?._id.toString() as string
     const bookId = req.params.bookId
 
     const findBook = await Book.findOne({ _id: bookId })
@@ -47,7 +47,7 @@ export const deleteBookComment = async (req: AuthRequest, res: Response) => {
         bookId as any
       ) as number
 
-      findBook.commentInfo?.comments.splice(commentBookIndex, 1)
+      findBook.commentInfo?.comments?.splice(commentBookIndex, 1)
       findUser.userInfo?.books?.comments.splice(commentUserIndex, 1)
 
       await findUser.save()

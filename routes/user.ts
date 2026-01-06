@@ -5,24 +5,21 @@ import {
   viewOneUserProfile,
   viewAllUserProfile,
   viewOneUserProfileId,
-} from "../controllers/user/getControllers.js"
+} from "../controllers/user/getControllers"
 
 import {
   userSignUp,
   resetPasswordUser,
   loginUser,
   uploadUserImage,
-} from "../controllers/user/postControllers.js"
+} from "../controllers/user/postControllers"
 
-import {
-  editUsername,
-  editUserInfo,
-} from "../controllers/user/putControllers.js"
+import { editUsername, editUserInfo } from "../controllers/user/putControllers"
 
-import { deleteUser } from "../controllers/user/deleteControllers.js"
+import { deleteUser } from "../controllers/user/deleteControllers"
 
-import checkAuth from "../middlewares/checkAuth.js"
-import upload from "../service/upload.js"
+import checkAuth from "../middlewares/checkAuth"
+import upload from "../service/upload"
 
 const app = express.Router()
 
