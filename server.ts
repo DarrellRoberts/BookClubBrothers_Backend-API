@@ -9,11 +9,11 @@ dotenv.config()
 
 const app = express()
 
-const PORT = process.env.PORT
+const PORT = Number(process.env.PORT) || 8080
 
 connectDB()
 
-// Necessary middleware
+// Necessary middlewaree
 app.use(cors())
 app.use(express.json())
 
@@ -24,6 +24,6 @@ app.use("/users", userRoutes)
 app.get("/", (req: Request, res: Response) => {
   res.send("Welcome to the BookClub Brothers")
 })
-app.listen(PORT, () => {
+app.listen(PORT, "0.0.0.0", () => {
   console.log(`Server running on http://localhost:${PORT}`)
 })

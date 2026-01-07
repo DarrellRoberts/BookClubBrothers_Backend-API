@@ -5,7 +5,7 @@ services:
       - "8080:8080"
     environment:
       - PORT=8080
-      - MONGODB_URI=${MONGODB_URI}
+      - MONGO_URI=${MONGO_URI}
       - ADMIN_ID=${ADMIN_ID}
       - CLOUD_NAME=${CLOUD_NAME}
       - API_KEY=${API_KEY}
