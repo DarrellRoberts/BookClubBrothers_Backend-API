@@ -44,7 +44,7 @@ export const bookImage = async (req: AuthRequest, res: Response) => {
         {
           $set: { reviewImageURL: req.file.path },
         },
-        { new: true }
+        { new: true },
       )
       await bookImage?.save()
       return res.status(200).json({ msg: "image successfully saved" })
@@ -70,7 +70,7 @@ export const submitBookRating = async (req: AuthRequest, res: Response) => {
       const bookScoreUserArray = findBook.scoreRatings?.raterId
 
       const hasUserRated = bookScoreUserArray?.some(
-        (raterId) => raterId.toString() === userId
+        (raterId) => raterId.toString() === userId,
       )
 
       if (hasUserRated) {
@@ -83,8 +83,15 @@ export const submitBookRating = async (req: AuthRequest, res: Response) => {
         findBook.scoreRatings?.rating?.push(rateDetails.rating)
 
         await findUser.save()
-        await findBook.save()
-        res.status(200).json({ msg: "Rating submitted successfully" })
+
+        const ratings = findBook.scoreRatings?.rating || []
+        const totalSum = ratings.reduce((sum, r) => sum + r, 0)
+        findBook.totalScore = ratings.length > 0 ? totalSum / ratings.length : 0
+
+        const updatedBook = await findBook.save()
+        res
+          .status(201)
+          .json({ msg: "Rating submitted successfully", updatedBook })
       }
     } else {
       return res.status(404).json({ msg: "Book or user not found" })
@@ -93,7 +100,6 @@ export const submitBookRating = async (req: AuthRequest, res: Response) => {
     updateUserLoneWolfBadge(userId, bookId)
     punctualBadge(userId, bookId)
     updateUserMostBooksBadge(userId)
-    calculateAverageRating(bookId)
   } catch (error) {
     return res.status(500).json({ error })
   }
@@ -111,7 +117,7 @@ export const submitBookComment = async (req: AuthRequest, res: Response) => {
       const bookScoreUserArray = findBook.commentInfo?.commentId
 
       const hasUserRated = bookScoreUserArray?.some(
-        (raterId) => raterId.toString() === userId
+        (raterId) => raterId.toString() === userId,
       )
 
       if (hasUserRated) {
@@ -186,7 +192,7 @@ export const createShortStory = async (req: AuthRequest, res: Response) => {
 
 export const submitShortStoryRating = async (
   req: AuthRequest,
-  res: Response
+  res: Response,
 ) => {
   try {
     const userId = req.user!._id.toString()
@@ -203,7 +209,7 @@ export const submitShortStoryRating = async (
       return res.status(405).json({ msg: "Book has no short stories" })
     } else {
       const shortStory = findBook.shortStories?.find(
-        (story) => story._id.toString() === shortStoryId
+        (story) => story._id.toString() === shortStoryId,
       )
       if (!shortStory) {
         return res.status(404).json({ msg: "Short story does not exist" })
@@ -211,12 +217,12 @@ export const submitShortStoryRating = async (
       const bookScoreUserArray = findBook.scoreRatings?.raterId
 
       const hasUserRated = bookScoreUserArray?.some(
-        (raterId) => raterId.toString() === userId
+        (raterId) => raterId.toString() === userId,
       )
 
       if (hasUserRated) {
         const hasUserRatedShortStory = shortStory.scoreRatings?.raterId?.some(
-          (raterId) => raterId.toString() === userId
+          (raterId) => raterId.toString() === userId,
         )
         if (hasUserRatedShortStory) {
           return res.status(200).json({ msg: "User has already rated" })
@@ -224,7 +230,7 @@ export const submitShortStoryRating = async (
         shortStory.scoreRatings?.raterId?.push(userId as any)
         shortStory.scoreRatings?.rating?.push(rateDetails.rating)
         const ratedStories = findBook.shortStories?.filter((story) =>
-          story.scoreRatings?.raterId?.includes(userId as any)
+          story.scoreRatings?.raterId?.includes(userId as any),
         ) as ShortBook[]
         const newTotalRating = ratedStories?.reduce((acc, current) => {
           return (
@@ -239,21 +245,27 @@ export const submitShortStoryRating = async (
         const newRating = newTotalRating / ratedStories.length
         const bookScoreUserArray = findBook.scoreRatings?.raterId
         const ratingBookIndex = bookScoreUserArray?.indexOf(
-          userId as any
+          userId as any,
         ) as number
 
         const userScoreBookArray = findUser?.userInfo?.books?.booksScored
         const ratingUserIndex = userScoreBookArray?.indexOf(
-          bookId as any
+          bookId as any,
         ) as number
 
         findUser?.userInfo?.books?.score.splice(ratingUserIndex, 1, newRating)
         findBook?.scoreRatings?.rating?.splice(ratingBookIndex, 1, newRating)
 
         await findUser?.save()
-        await findBook?.save()
-        calculateAverageRating(bookId)
-        return res.status(200).json({ msg: "Rating submitted successfully" })
+
+        const ratings = findBook.scoreRatings?.rating || []
+        const totalSum = ratings.reduce((sum, r) => sum + r, 0)
+        findBook.totalScore = ratings.length > 0 ? totalSum / ratings.length : 0
+
+        const updatedBook = await findBook.save()
+        res
+          .status(201)
+          .json({ msg: "Rating submitted successfully", updatedBook })
       } else {
         shortStory.scoreRatings?.raterId?.push(userId as any)
         shortStory.scoreRatings?.rating?.push(rateDetails.rating)
@@ -263,11 +275,15 @@ export const submitShortStoryRating = async (
         findBook?.scoreRatings?.rating?.push(rateDetails.rating)
 
         await findUser?.save()
-        await findBook.save()
-        calculateAverageRating(bookId)
-        return res
-          .status(200)
-          .json({ msg: "Rating submitted successfully", findBook })
+
+        const ratings = findBook.scoreRatings?.rating || []
+        const totalSum = ratings.reduce((sum, r) => sum + r, 0)
+        findBook.totalScore = ratings.length > 0 ? totalSum / ratings.length : 0
+
+        const updatedBook = await findBook.save()
+        res
+          .status(201)
+          .json({ msg: "Rating submitted successfully", updatedBook })
       }
     }
   } catch (error) {

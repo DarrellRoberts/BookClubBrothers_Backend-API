@@ -55,7 +55,7 @@ export const editBook = async (req: AuthRequest, res: Response) => {
         },
         {
           new: true,
-        }
+        },
       )
       if (!updateBook) {
         return res.status(404).json({ error: `${bookId} book not found` })
@@ -79,31 +79,35 @@ export const editBookRating = async (req: AuthRequest, res: Response) => {
     if (findBook && findUser) {
       const bookScoreUserArray = findBook.scoreRatings?.raterId
       const ratingBookIndex = bookScoreUserArray?.indexOf(
-        userId as any
+        userId as any,
       ) as number
 
       const userScoreBookArray = findUser.userInfo?.books?.booksScored
       const ratingUserIndex = userScoreBookArray?.indexOf(
-        bookId as any
+        bookId as any,
       ) as number
 
       findUser.userInfo?.books?.score.splice(
         ratingUserIndex,
         1,
-        rateDetails.rating
+        rateDetails.rating,
       )
       findBook.scoreRatings?.rating?.splice(
         ratingBookIndex,
         1,
-        rateDetails.rating
+        rateDetails.rating,
       )
       await findUser.save()
-      await findBook.save()
-      res.status(200).json({ msg: "Rating submitted edited" })
+
+      const ratings = findBook.scoreRatings?.rating || []
+      const totalSum = ratings.reduce((sum, r) => sum + r, 0)
+      findBook.totalScore = ratings.length > 0 ? totalSum / ratings.length : 0
+
+      const updatedBook = await findBook.save()
+      res.status(200).json({ msg: "Rating submitted edited", updatedBook })
     } else {
       return res.status(404).json({ msg: "Book or user not found" })
     }
-    calculateAverageRating(bookId)
   } catch (error) {
     return res.status(500).json({ error })
   }
@@ -120,7 +124,7 @@ export const editShortStoryRating = async (req: AuthRequest, res: Response) => {
     const findUser = await User.findOne({ _id: userId })
 
     const shortStory = findBook?.shortStories?.find(
-      (story) => story._id.toString() === shortStoryId
+      (story) => story._id.toString() === shortStoryId,
     )
 
     if (!shortStory) {
@@ -131,11 +135,11 @@ export const editShortStoryRating = async (req: AuthRequest, res: Response) => {
       shortStory.scoreRatings?.rating?.splice(
         shortStory.scoreRatings.raterId!.indexOf(userId as any),
         1,
-        rateDetails.rating
+        rateDetails.rating,
       )
 
       const ratedStories = findBook.shortStories?.filter((story) =>
-        story.scoreRatings?.raterId?.includes(userId as any)
+        story.scoreRatings?.raterId?.includes(userId as any),
       ) as ShortBook[]
       const newTotalRating = ratedStories?.reduce((acc, current) => {
         return (
@@ -150,23 +154,25 @@ export const editShortStoryRating = async (req: AuthRequest, res: Response) => {
       const newRating = newTotalRating / ratedStories.length
       const bookScoreUserArray = findBook.scoreRatings?.raterId
       const ratingBookIndex = bookScoreUserArray?.indexOf(
-        userId as any
+        userId as any,
       ) as number
 
       const userScoreBookArray = findUser.userInfo?.books?.booksScored
       const ratingUserIndex = userScoreBookArray?.indexOf(
-        bookId as any
+        bookId as any,
       ) as number
 
       findUser.userInfo?.books?.score.splice(ratingUserIndex, 1, newRating)
       findBook.scoreRatings?.rating?.splice(ratingBookIndex, 1, newRating)
 
       await findUser.save()
-      await findBook.save()
-      calculateAverageRating(bookId)
-      return res
-        .status(200)
-        .json({ msg: "Rating edited successfully", findBook })
+
+      const ratings = findBook.scoreRatings?.rating || []
+      const totalSum = ratings.reduce((sum, r) => sum + r, 0)
+      findBook.totalScore = ratings.length > 0 ? totalSum / ratings.length : 0
+
+      const updatedBook = await findBook.save()
+      res.status(200).json({ msg: "Rating submitted edited", updatedBook })
     } else {
       return res.status(404).json({ msg: "Book or user not found" })
     }
@@ -190,21 +196,21 @@ export const editBookComment = async (req: AuthRequest, res: Response) => {
       const userScoreBookArray = findUser.userInfo?.books?.booksCommented
 
       const commentBookIndex = bookScoreUserArray?.indexOf(
-        userId as any
+        userId as any,
       ) as number
       const commentUserIndex = userScoreBookArray?.indexOf(
-        bookId as any
+        bookId as any,
       ) as number
 
       findBook.commentInfo?.comments?.splice(
         commentBookIndex,
         1,
-        commentDetails.comments
+        commentDetails.comments,
       )
       findUser.userInfo?.books?.comments.splice(
         commentUserIndex,
         1,
-        commentDetails.comments
+        commentDetails.comments,
       )
 
       await findUser.save()
