@@ -1,6 +1,7 @@
 node_modules/
 dist/
 .env
+.env.local
 docker-compose.yml
 .git
 npm-debug.log
